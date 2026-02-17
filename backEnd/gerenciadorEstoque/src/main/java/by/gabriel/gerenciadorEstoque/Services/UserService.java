@@ -11,7 +11,7 @@ import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserInactiveException
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNameNotNullException;
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNotFoundException;
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserPasswordNotNullException;
-import by.gabriel.gerenciadorEstoque.Domain.Model.Movimentações.MovUser;
+import by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacoes.MovUser;
 import by.gabriel.gerenciadorEstoque.Domain.Model.Usuario.Usuario;
 import by.gabriel.gerenciadorEstoque.Enum.Movimentacao.MovUserAcao;
 import by.gabriel.gerenciadorEstoque.Enum.Movimentacao.MovUserCampo;
@@ -91,6 +91,7 @@ public class UserService {
             dto.nome(),
             dto.senha(),
             dto.email(), //Usa o telefone tratado com null
+            dto.userCargo(),
             dto.telefone(), // Usa o telefone tratado com mull
             UserStatus.ATIVO
         );
@@ -103,6 +104,7 @@ public class UserService {
             MovUserAcao.CRIACAO,
             MovUserCampo.NENHUM, // nenhum campo específico afetado
             usuarioSalvo,
+            usuario.getUserCargo(),
             usuarioSalvo.getNome()
         );
 

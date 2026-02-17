@@ -3,11 +3,12 @@ package by.gabriel.gerenciadorEstoque.Domain.Model.Usuario;
 import java.util.List;
 import java.util.UUID;
 
+import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserCargo;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserStatus;
 import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserStatusLogin;
-import by.gabriel.gerenciadorEstoque.Domain.Model.Movimentações.MovUser;
+import by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacoes.MovUser;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -34,6 +35,9 @@ public class Usuario {
     private String email;
 
     @Enumerated(EnumType.STRING) // salva o enum como texto
+    private UserCargo userCargo;
+
+    @Enumerated(EnumType.STRING) // salva o enum como texto
     private UserStatus userStatus;
 
     @Enumerated(EnumType.STRING) // salva o enum como texto
@@ -52,16 +56,19 @@ public class Usuario {
     }
     
     // Construtor com todos os campos
-    public Usuario(String nome, String senha, String email,String telefone, UserStatus userStatus) {
+    public Usuario(String nome, String senha, String email, UserCargo userCargo, String telefone, UserStatus userStatus) {
         this.nome = nome;
         setSenhaCriptografada(senha);
 
         // // Normaliza email: se vier vazio, vira null
         this.email = (email == null  || email.isBlank()) ? null : email;
-        
+
+        this.userCargo = userCargo;
+
         // //condição ? valorSeVerdadeiro : valorSeFalso
         this.telefone = (telefone == null || telefone.isBlank()) ? null : telefone;
         this.userStatus = userStatus;
+
     }
 
 
@@ -125,6 +132,9 @@ public class Usuario {
         this.senha = senha;
     }
 
+    public UserCargo getUserCargo() {
+        return userCargo;
+    }
 
     public UserStatus getUserStatus() {
         return userStatus;

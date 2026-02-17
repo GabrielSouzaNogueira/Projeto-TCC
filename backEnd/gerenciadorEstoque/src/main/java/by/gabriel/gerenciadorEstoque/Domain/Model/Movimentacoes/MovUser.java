@@ -1,9 +1,10 @@
-package by.gabriel.gerenciadorEstoque.Domain.Model.Movimentações;
+package by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacoes;
 
 import java.time.LocalDateTime;
 
 import by.gabriel.gerenciadorEstoque.Enum.Movimentacao.MovUserAcao;
 import by.gabriel.gerenciadorEstoque.Enum.Movimentacao.MovUserCampo;
+import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserCargo;
 import by.gabriel.gerenciadorEstoque.Domain.Model.Usuario.Usuario;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -28,6 +29,9 @@ public class MovUser {
     @Enumerated(EnumType.STRING)
     private MovUserCampo campoAfetado = MovUserCampo.NENHUM;
 
+    @Enumerated(EnumType.STRING)
+    private UserCargo userCargo;
+
     private LocalDateTime dataCriacao;
 
     @ManyToOne //Relacionamento N x 1 
@@ -38,10 +42,11 @@ public class MovUser {
 
     public MovUser() {}
 
-    public MovUser(MovUserAcao acaoMov, MovUserCampo campoAfetado, Usuario usuario, String nomeUser) {
+    public MovUser(MovUserAcao acaoMov, MovUserCampo campoAfetado, Usuario usuario, UserCargo userCargo, String nomeUser) {
         this.acaoMov = acaoMov;
         this.campoAfetado = campoAfetado;
         this.usuario = usuario;
+        this.userCargo = userCargo;
         this.nomeUser = nomeUser;
     }
 
