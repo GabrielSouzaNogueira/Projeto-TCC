@@ -30,11 +30,11 @@ document.querySelectorAll('.sidebar nav a[data-action]').forEach(link => {
             // Esconde todas as telas e remove active do menu
             document.querySelectorAll('.tela').forEach(t => t.style.display = 'none');
             document.querySelectorAll('.sidebar nav a').forEach(l => l.classList.remove('active'));
-            
+
             // Mostra a tela clicada e ativa o link
             document.getElementById(mapTelas[acao]).style.display = 'block';
-            this.classList.add('active'); 
-            
+            this.classList.add('active');
+
             if(acao === 'auditoria') {
                 carregarAuditoria();
             }
@@ -45,6 +45,7 @@ document.querySelectorAll('.sidebar nav a[data-action]').forEach(link => {
 // --- 3. Sidebar Toggle ---
 const btnToggle = document.getElementById('btnToggleSidebar');
 const sidebar = document.querySelector('.sidebar');
+
 if(btnToggle) {
     btnToggle.addEventListener('click', () => {
         sidebar.classList.toggle('collapsed');
@@ -75,12 +76,12 @@ function salvarUsuario() {
     const usuarioDTO = {
         nome: nome,
         email: email,
-        senha: senha, 
+        senha: senha,
         telefone: telefone
     };
 
     $.ajax({
-        url: 'http://localhost:8080/usuario/cadastro', 
+        url: 'http://localhost:8080/usuario/cadastro',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(usuarioDTO),
@@ -97,8 +98,8 @@ function salvarUsuario() {
 
 function carregarAuditoria() {
     const tbody = document.getElementById('tbodyAuditoria');
-    if(tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Buscando dados no servidor...</td></tr>'; 
-    
+    if(tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Buscando dados no servidor...</td></tr>';
+
     // Aqui você faria o seu $.get para listar o histórico
 }
 

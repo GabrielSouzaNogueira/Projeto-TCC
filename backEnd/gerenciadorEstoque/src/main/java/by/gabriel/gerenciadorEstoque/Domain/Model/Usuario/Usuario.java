@@ -58,7 +58,7 @@ public class Usuario {
     // Construtor com todos os campos
     public Usuario(String nome, String senha, String email, UserCargo userCargo, String telefone, UserStatus userStatus) {
         this.nome = nome;
-        setSenhaCriptografada(senha);
+        setSenhaCriptografada(senha); //Senha já é criptografada no momento da criação do Usuario
 
         // // Normaliza email: se vier vazio, vira null
         this.email = (email == null  || email.isBlank()) ? null : email;
@@ -127,11 +127,6 @@ public class Usuario {
         return senha;
     }
 
-
-    private void setSenha(String senha) {
-        this.senha = senha;
-    }
-
     public UserCargo getUserCargo() {
         return userCargo;
     }
@@ -146,13 +141,17 @@ public class Usuario {
     }
 
 
-    public String telefone() {
+    public String getTelefone() {
         return telefone;
     }
 
 
-    public void setNumeroTelefone1(String telefone) {
+    public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public void setUserCargo(UserCargo userCargo) {
+        this.userCargo = userCargo;
     }
 
 

@@ -5,6 +5,7 @@ public enum MovUserCampo {
     EMAIL,
     SENHA,
     TELEFONE,
+    CARGO,
     NENHUM // usado quando não há campo específico
 }
 

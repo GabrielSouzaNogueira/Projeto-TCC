@@ -14,6 +14,7 @@ import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserAlreadyExistsExce
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserInactiveException;
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNameNotNullException;
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNotFoundException;
+import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNotPermission;
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserPasswordNotNullException;
 
 @RestControllerAdvice
@@ -67,6 +68,11 @@ public class UserExceptionHandler {
     @ExceptionHandler(EmailAlreadyExistException.class)
     public ResponseEntity<ResponseDTO> handleEmailAlreadyExist(EmailAlreadyExistException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDTO(false, ex.getMessage(), "EMAIL_ALREADY_EXISTS", Instant.now().toString()));
+    }
+
+    @ExceptionHandler(UserNotPermission.class)
+    public ResponseEntity<ResponseDTO> handleUserNotPermission(UserNotPermission ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO(false, ex.getMessage(),"USER_NOT_PERMISSION",Instant.now().toString()));
     }
 }
 

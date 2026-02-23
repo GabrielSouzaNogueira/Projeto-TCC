@@ -32,7 +32,7 @@ public class MovUser {
     @Enumerated(EnumType.STRING)
     private UserCargo userCargo;
 
-    private LocalDateTime dataCriacao;
+    private LocalDateTime dataMov;
 
     @ManyToOne //Relacionamento N x 1 
     @JoinColumn(name = "user_id")
@@ -52,7 +52,7 @@ public class MovUser {
 
     @PrePersist
     public void prePersist() {
-        this.dataCriacao = LocalDateTime.now();
+        this.dataMov = LocalDateTime.now(); //Gera a data de criação atual da maquina
     }
 
     public Long getMovId() {
@@ -80,11 +80,11 @@ public class MovUser {
     }
 
     public LocalDateTime getDataCriacao() {
-        return dataCriacao;
+        return dataMov;
     }
 
-    public void setDataCriacao(LocalDateTime dataCriacao) {
-        this.dataCriacao = dataCriacao;
+    public void setDataCriacao(LocalDateTime dataMov) {
+        this.dataMov = dataMov;
     }
 
     public Usuario getUsuario() {

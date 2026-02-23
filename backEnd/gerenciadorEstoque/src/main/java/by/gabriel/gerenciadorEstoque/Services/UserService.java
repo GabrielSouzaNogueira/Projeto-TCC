@@ -1,8 +1,11 @@
 package by.gabriel.gerenciadorEstoque.Services;
 
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
+import by.gabriel.gerenciadorEstoque.Api.DTO.Usuario.UpdateUserDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.Usuario.UserDTO;
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.EmailAlreadyExistException;
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.InvalidPasswordException;
@@ -10,14 +13,17 @@ import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserAlreadyExistsExce
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserInactiveException;
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNameNotNullException;
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNotFoundException;
+import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNotPermission;
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserPasswordNotNullException;
 import by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacoes.MovUser;
 import by.gabriel.gerenciadorEstoque.Domain.Model.Usuario.Usuario;
 import by.gabriel.gerenciadorEstoque.Enum.Movimentacao.MovUserAcao;
 import by.gabriel.gerenciadorEstoque.Enum.Movimentacao.MovUserCampo;
+import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserCargo;
 import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserStatus;
 import by.gabriel.gerenciadorEstoque.Repository.Movimentação.MovUserRepository;
 import by.gabriel.gerenciadorEstoque.Repository.Usuario.UserRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
@@ -99,21 +105,86 @@ public class UserService {
         // Salva e captura o retorno (já com UUID gerenciado)
         Usuario usuarioSalvo = userRepository.save(usuario);
 
+        // Verifica se o nome já existe(Esta parte trantando um erro de salvar 2 vezes seguidas na tela de cadastro)
+        if (userRepository.findByNomeIgnoreCase(dto.nome()).isPresent()) {
+            throw new UserAlreadyExistsException("Usuario já existe");
+        }
+
         // Cria a movimentação de criação
         MovUser movUser = new MovUser(
             MovUserAcao.CRIACAO,
             MovUserCampo.NENHUM, // nenhum campo específico afetado
-            usuarioSalvo,
-            usuario.getUserCargo(),
-            usuarioSalvo.getNome()
+            usuarioSalvo, //Persistindo o usuario criado acima
+            usuario.getUserCargo(), //Puxando o cargo colocado no cadastro
+            usuarioSalvo.getNome() //Puxando o nome do Usuario que realizou o cadastro
         );
 
         // Salva a movimentação
         movUserRepository.save(movUser);
 
+        //Retorno o Usuario criado no final
         return usuarioSalvo;
     }
 
+    //METODO PARA ATUALIZAR DADOS 
+    @Transactional // Anotation de segurança onde ele é "commitado" ou "estornado" ao tentar salvar no banco
+    public Boolean atualizarDados(UUID id, UpdateUserDTO dto) {
 
+        MovUser movUser;
 
+        //Verificando se o usuario selecionado existe cadastrado 
+        Usuario usuario = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Usuario não encontrado"));
+
+        //Verificando se o Usuario tem o cargo necessario
+        UserCargo cargo = usuario.getUserCargo();
+        if(cargo == null || (cargo != UserCargo.ADMINISTRADOR && cargo != UserCargo.DEV)) {
+            throw new UserNotPermission("Usuario sem permissão");
+        }
+
+        if(dto.email() != null && !dto.email().isBlank()) {
+            usuario.setEmail(dto.email().toLowerCase());
+
+            movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.EMAIL, usuario, usuario.getUserCargo(), usuario.getNome());
+            movUserRepository.save(movUser);
+        }
+
+        if (dto.telefone() != null && !dto.telefone().isBlank()) {
+            usuario.setTelefone(dto.telefone());
+
+            movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.TELEFONE, usuario, usuario.getUserCargo(), usuario.getNome());
+            movUserRepository.save(movUser);
+        }
+        
+        if(dto.userCargo() != null) {
+            usuario.setUserCargo(dto.userCargo());
+
+            movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.CARGO, usuario, usuario.getUserCargo(), usuario.getNome());
+            movUserRepository.save(movUser);
+        }
+
+        userRepository.save(usuario);
+        
+        return true;// 4. Se passou por todas as verificações, retorna true (atualização feita com sucesso)
+
+    }
+
+    //METODO PARA DELETAR USUARIOS
+    @Transactional
+    public Boolean deletarUsuario(UUID id) {
+
+        Usuario usuario = userRepository.findById(id).orElseThrow(() -> new UserNotPermission("Usuario não encontrado"));
+
+        UserCargo cargo = usuario.getUserCargo();
+        if(cargo == null || (cargo != UserCargo.ADMINISTRADOR && cargo != UserCargo.DEV)) {
+            throw new UserNotPermission("Usuario sem permissão");
+        }
+
+        usuario.setUserStatus(UserStatus.INATIVO);
+        userRepository.save(usuario);
+
+        MovUser movUser = new MovUser(MovUserAcao.EXCLUSAO,MovUserCampo.NENHUM, usuario, cargo, usuario.getNome());
+        movUserRepository.save(movUser);
+        
+        return true;
+    }
 }

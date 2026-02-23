@@ -87,16 +87,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json().catch(()=>null);
         console.log('Resposta do backend:', data);
         alert("Login realizado com sucesso!");
-
+        
         // dentro do código de sucesso do login
-        window.location.href = 'frontEnd/Menu/dashboard.html';
+        window.location.href = '/frontEnd/Menu/dashboard.html';
 
       } else if (response.status === 401) {
         alert("Usuário ou senha incorretos!");
       } else {
         const text = await response.text();
         console.error('Erro no servidor:', response.status, text);
-        alert("Erro no servidor. Veja console para detalhes.");
+        alert("Usuario nao existente no sistema");
       }
 
     } catch (erro) {
