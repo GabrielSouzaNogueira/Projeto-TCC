@@ -79,11 +79,11 @@ public class MovUser {
         this.campoAfetado = campoAfetado;
     }
 
-    public LocalDateTime getDataCriacao() {
+    public LocalDateTime getDataMov() {
         return dataMov;
     }
 
-    public void setDataCriacao(LocalDateTime dataMov) {
+    public void setDataMov(LocalDateTime dataMov) {
         this.dataMov = dataMov;
     }
 

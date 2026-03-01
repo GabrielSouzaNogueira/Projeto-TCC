@@ -34,6 +34,9 @@ public class Usuario {
     @Column(nullable = true)
     private String email;
 
+    @Column(nullable = true)
+    private String telefone;
+
     @Enumerated(EnumType.STRING) // salva o enum como texto
     private UserCargo userCargo;
 
@@ -43,30 +46,25 @@ public class Usuario {
     @Enumerated(EnumType.STRING) // salva o enum como texto
     private UserStatusLogin statuslogin;
 
-    @Column(nullable = true)
-    private String telefone;
-
     // Relacionamento com MovUser
     @OneToMany(mappedBy = "usuario") // opção do cascade, ele seria um facilitador para menos código mas nao afeta os dados
     private List<MovUser> movimentacoes;
 
-    
     public Usuario() {
 
     }
     
     // Construtor com todos os campos
-    public Usuario(String nome, String senha, String email, UserCargo userCargo, String telefone, UserStatus userStatus) {
+    public Usuario(String nome, String senha, String email, String telefone, UserCargo userCargo,UserStatus userStatus) {
         this.nome = nome;
         setSenhaCriptografada(senha); //Senha já é criptografada no momento da criação do Usuario
 
         // // Normaliza email: se vier vazio, vira null
         this.email = (email == null  || email.isBlank()) ? null : email;
 
-        this.userCargo = userCargo;
-
         // //condição ? valorSeVerdadeiro : valorSeFalso
         this.telefone = (telefone == null || telefone.isBlank()) ? null : telefone;
+        this.userCargo = userCargo;
         this.userStatus = userStatus;
 
     }
