@@ -96,19 +96,14 @@ public class UserService {
         Usuario usuario = new Usuario(
             dto.nome(),
             dto.senha(),
-            dto.email(), //Usa o telefone tratado com null
+            dto.email(), //Usa o email tratado com null
+            dto.telefone(), //Usa o telefone tratado com null
             dto.userCargo(),
-            dto.telefone(), // Usa o telefone tratado com mull
             UserStatus.ATIVO
         );
 
         // Salva e captura o retorno (já com UUID gerenciado)
         Usuario usuarioSalvo = userRepository.save(usuario);
-
-        // Verifica se o nome já existe(Esta parte trantando um erro de salvar 2 vezes seguidas na tela de cadastro)
-        if (userRepository.findByNomeIgnoreCase(dto.nome()).isPresent()) {
-            throw new UserAlreadyExistsException("Usuario já existe");
-        }
 
         // Cria a movimentação de criação
         MovUser movUser = new MovUser(
