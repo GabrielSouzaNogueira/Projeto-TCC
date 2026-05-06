@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Estoque</title>
+
+    <style>
+        /* Deixa tudo zerado antes do codigo rodar*/
+        * {
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+
+         /* Estilos para o corpo da página (a tela inteira) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Melhorei um pouco a fonte */
+            background: linear-gradient(140deg, #e3fdf5 1%, #bbfbe6 99%); /* Cria o fundo azul degradê */
+            min-height: 100vh; /* Garante que a altura seja no mínimo 100% da tela visível */
+            display: flex; /* Ativa o modo Flexbox para alinhar itens */
+            align-items: center; /* Centraliza o conteúdo verticalmente (no meio da altura) */
+            justify-content: center; /* Centraliza o conteúdo horizontalmente (no meio da largura) */
+            position: relative; /* Necessário para posicionamentos relativos internos, se houver */
+        }
+
+        /* Estilos do cartão branco de login (Container Principal) */
+        .login-container {
+            background: white; /* Cor de fundo branca */
+            border-radius: 16px; /* Arredonda os cantos do cartão */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Cria uma sombra suave atrás do cartão */
+            padding: 40px; /* Espaço interno entre a borda do cartão e o conteúdo */
+            width: 100%; /* Tenta ocupar 100% da largura disponível */
+            max-width: 400px; /* Mas trava a largura máxima em 400 pixels */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Prepara animação suave para movimentos */
+            z-index: 10; /* Garante que o cartão fique acima do rodapé se a tela for muito pequena */
+        }
+
+        /* --- NOVOS ESTILOS ADICIONADOS A PARTIR DAQUI --- */
+
+        /* Estilização do Cabeçalho (Logo e Título) */
+        .login {
+            text-align: center; /* Centraliza o texto */
+            margin-bottom: 30px; /* Dá um espaço entre o título e o formulário */
+        }
+
+        .logo h1 {
+            color: #2d3436; /* Cor cinza escuro para o título */
+            font-size: 24px; /* Tamanho da fonte */
+            margin-bottom: 8px; /* Espaço pequeno abaixo do título */
+        }
+
+        .logo p {
+            color: #636e72; /* Cor cinza claro para o subtítulo */
+            font-size: 14px;
+        }
+
+        /* Estilização dos Grupos de Formulário (Label + Input) */
+        .formgrupo {
+            margin-bottom: 20px; /* Espaço entre o campo de usuário e o de senha */
+        }
+
+        label {
+            display: block; /* Garante que o label fique na linha de cima do input */
+            margin-bottom: 8px; /* Espaço entre o texto do label e a caixa de input */
+            color: #2d3436;
+            font-weight: 600; /* Texto em negrito suave */
+            font-size: 14px;
+        }
+
+        /* Estilização Comum para Inputs de Texto e Senha */
+        /* Seleciona o input dentro da div .input-usuario e .input-senha */
+        .input-usuario input, 
+        .input-senha input {
+            width: 100%; /* Ocupa toda a largura do container pai */
+            padding: 12px 15px; /* Espaço interno para o texto não colar na borda */
+            border: 2px solid #dfe6e9; /* Borda cinza clara */
+            border-radius: 8px; /* Cantos arredondados */
+            font-size: 15px;
+            transition: all 0.3s ease; /* Suaviza a mudança de cor da borda */
+            outline: none; /* Remove a borda azul padrão do navegador */
+        }
+
+        /* Efeito quando clica no input (Foco) */
+        .input-usuario input:focus, 
+        .input-senha input:focus {
+            border-color: #00b894; /* Muda a borda para verde quando selecionado */
+            box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.1); /* Sombra verde suave ao redor */
+        }
+
+        /* Estilos Específicos para o Campo de Senha (para posicionar o olho) */
+        .input-senha {
+            position: relative; /* Importante! Permite que o botão 'olho' use position absolute relativo a essa caixa */
+        }
+
+        /* Botão de Olho (Ver/Ocultar Senha) */
+        .password-toggle {
+            position: absolute; /* Tira o botão do fluxo normal */
+            right: 15px; /* Cola ele na direita */
+            top: 50%; /* Posiciona no meio verticalmente */
+            transform: translateY(-50%); /* Ajuste fino para ficar exatamente no centro vertical */
+            background: none; /* Remove fundo */
+            border: none; /* Remove borda */
+            cursor: pointer; /* Mãozinha do mouse */
+            font-size: 18px; /* Tamanho do ícone */
+            color: #636e72; /* Cor do ícone */
+        }
+
+        .password-toggle:hover {
+            color: #2d3436; /* Escurece o ícone ao passar o mouse */
+        }
+
+        /* Botão de Login (Entrar) */
+        .login-btn {
+            width: 100%; /* Botão largura total */
+            padding: 14px; /* Altura do botão */
+            background-color: #00b894; /* Cor de fundo verde (combinando com o tema) */
+            color: white; /* Texto branco */
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Animação de cor */
+            margin-top: 10px; /* Um pouco de espaço acima do botão */
+        }
+
+        /* Efeito Hover do Botão (passar o mouse) */
+        .login-btn:hover {
+            background-color: #019577; /* Verde um pouco mais escuro */
+        }
+
+        /* Estado Desabilitado (quando clica e carrega) */
+        .login-btn:disabled {
+            background-color: #b2bec3; /* Cinza */
+            cursor: not-allowed; /* Ícone de proibido */
+        }
+
+        /* --- CSS DO RODAPÉ (ADICIONADO) --- */
+        .rodape-mosqueteiros {
+            position: fixed; /* Fixa o elemento na tela, ignorando o flexbox do body */
+            bottom: 15px;    /* Distância de 15px do fundo da tela */
+            left: 0;         /* Começa da esquerda total */
+            width: 100%;     /* Ocupa a largura total da tela */
+            text-align: center; /* Centraliza o texto */
+            color: #535c68;  /* Cor cinza escuro discreta */
+            font-size: 13px; /* Tamanho da fonte pequeno e elegante */
+            font-weight: 500; /* Peso da fonte médio */
+            z-index: 1;      /* Fica numa camada abaixo do card de login se sobrepor */
+            opacity: 0.8;    /* Leve transparência para ficar suave */
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+    
+        <div class="login">
+            <div class="logo">
+                <h1>Controle de estoque</h1>
+                <p>Realize o login para entrar</p>
+            </div>
+        </div>
+
+        <form id="loginForm" action="#">
+            <div class="formgrupo">
+                <label for="username">Usuario</label>
+                <div class="input-usuario">
+                    <input type="text" id="username" name="username" required autocomplete="username" placeholder="Digite seu usuário">
+                </div>
+            </div>
+
+            <div class="formgrupo">
+                <label for="password">Senha</label>
+                <div class="input-senha">
+                    <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Digite sua senha">
+                    <button type="button" class="password-toggle" onclick="togglePassword()">👁</button> 
+                </div>
+            </div>
+            
+            <button type="submit" class="login-btn">
+                <span class="btn-text">Entrar</span>
+            </button>
+        </form>
+    </div>
+
+    <footer class="rodape-mosqueteiros">
+        <p>Desenvolvido e idealizado por Mosqueteiros</p>
+    </footer>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            
+            // CORREÇÃO 1: Seletor escrito corretamente (toggle vs toglle)
+            const toggleBtn = document.querySelector('.password-toggle');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text'; 
+                // Sugestão visual: Mudar o ícone para indicar "ocultar" ou mudar a cor
+                toggleBtn.textContent = '🙈'; 
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁';
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e){
+            // CORREÇÃO 2: Previne o recarregamento da página
+            e.preventDefault();
+
+            const button = document.querySelector('.login-btn'); // Adicionado 'const' para boas práticas
+            const btnText = document.querySelector('.btn-text');
+            
+            // Feedback visual opcional (para o usuário saber que algo está acontecendo)
+            const textoOriginal = btnText.innerText;
+            btnText.innerText = "Carregando...";
+            button.disabled = true;
+
+            setTimeout(() => {
+                alert("Login simulado com sucesso!");
+                
+                // Restaura o botão (opcional)
+                btnText.innerText = textoOriginal;
+                button.disabled = false;
+                
+                // Se quisesse redirecionar de verdade após o alert:
+                // window.location.href = "dashboard.html";
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

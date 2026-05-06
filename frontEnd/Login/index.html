@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Estoque</title>
+    
+    <link rel="stylesheet" href="style-login.css">
+</head>
+<body>
+    <div class="login-container">
+    
+        <div class="login">
+            <div class="logo">
+                <h1>Controle de estoque</h1>
+                <p>Realize o login para entrar</p>
+            </div>
+        </div>
+
+        <form id="loginForm" action="#">
+            <div class="formgrupo">
+                <label for="username">Usuario</label>
+                <div class="input-usuario">
+                    <input type="text" id="nome" name="username" required autocomplete="username" placeholder="Digite seu usuário">
+                </div>
+            </div>
+
+            <div class="formgrupo">
+                <label for="password">Senha</label>
+                <div class="input-senha">
+                    <input type="password" id="senha" name="password" required autocomplete="current-password" placeholder="Digite sua senha">
+                    <button type="button" class="password-toggle" onclick="togglePassword()">👁</button> 
+                </div>
+            </div>
+
+            <div class="esqueci-wrapper">
+                <a class="link-esqueci" id="btnEsqueciSenha">Esqueci minha senha</a>
+            </div>
+            
+            <button type="submit" class="login-btn">
+                <span class="btn-text">Entrar</span>
+            </button>
+        </form>
+    </div>
+
+    <footer class="rodape-mosqueteiros">
+        <p>Desenvolvido e idealizado por Mosqueteiros</p>
+    </footer>
+
+    <script src="script-login.js"></script>
+</body>
+</html>

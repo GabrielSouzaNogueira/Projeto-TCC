@@ -1,0 +1,143 @@
+/* Deixa tudo zerado antes do codigo rodar*/
+* {
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+/* Estilos para o corpo da página */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background: linear-gradient(140deg, #e3fdf5 1%, #bbfbe6 99%); 
+    min-height: 100vh; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    position: relative; 
+}
+
+.login-container {
+    background: white; 
+    border-radius: 16px; 
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); 
+    padding: 40px; 
+    width: 100%; 
+    max-width: 400px; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    z-index: 10; 
+}
+
+.login {
+    text-align: center; 
+    margin-bottom: 30px; 
+}
+
+.logo h1 {
+    color: #2d3436; 
+    font-size: 24px; 
+    margin-bottom: 8px; 
+}
+
+.logo p {
+    color: #636e72; 
+    font-size: 14px;
+}
+
+.formgrupo {
+    margin-bottom: 20px; 
+}
+
+label {
+    display: block; 
+    margin-bottom: 8px; 
+    color: #2d3436;
+    font-weight: 600; 
+    font-size: 14px;
+}
+
+.input-usuario input, 
+.input-senha input {
+    width: 100%; 
+    padding: 12px 15px; 
+    border: 2px solid #dfe6e9; 
+    border-radius: 8px; 
+    font-size: 15px;
+    transition: all 0.3s ease; 
+    outline: none; 
+}
+
+.input-usuario input:focus, 
+.input-senha input:focus {
+    border-color: #00b894; 
+    box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.1); 
+}
+
+.input-senha {
+    position: relative; 
+}
+
+.password-toggle {
+    position: absolute; 
+    right: 15px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    background: none; 
+    border: none; 
+    cursor: pointer; 
+    font-size: 18px; 
+    color: #636e72; 
+}
+
+.esqueci-wrapper {
+    text-align: right; 
+    margin-top: -10px; 
+    margin-bottom: 15px; 
+}
+
+.link-esqueci {
+    color: #00b894; 
+    font-size: 13px;
+    text-decoration: none; 
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.link-esqueci:hover {
+    text-decoration: underline; 
+}
+
+.login-btn {
+    width: 100%; 
+    padding: 14px; 
+    background-color: #00b894; 
+    color: white; 
+    border: none; 
+    border-radius: 8px; 
+    font-size: 16px; 
+    font-weight: bold; 
+    cursor: pointer;
+    transition: background-color 0.3s ease; 
+    margin-top: 10px; 
+}
+
+.login-btn:hover {
+    background-color: #019577; 
+}
+
+.login-btn:disabled {
+    background-color: #b2bec3; 
+    cursor: not-allowed; 
+}
+
+.rodape-mosqueteiros {
+    position: fixed; 
+    bottom: 15px;    
+    left: 0;         
+    width: 100%;     
+    text-align: center; 
+    color: #535c68;  
+    font-size: 13px; 
+    font-weight: 500; 
+    z-index: 1;      
+    opacity: 0.8;    
+}

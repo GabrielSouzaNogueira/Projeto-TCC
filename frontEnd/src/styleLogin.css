@@ -1,0 +1,65 @@
+body {
+    background: rgb(112, 20, 199);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+/*  */
+.login-box {
+    background-color: rgb(105, 8, 196);/* roxo semi-transparente */
+    padding: 40px;
+    border-radius: 20px;
+    border: 3px solid white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    width: 300px; /* largura fixa */
+    text-align: center; /* centraliza conteúdo */
+}
+
+.logo {
+    width: 100px;             /* tamanho da logo */
+    margin: 0 auto 20px auto; /* centraliza horizontalmente e dá espaço abaixo */
+    display: block;           /* ocupa uma linha inteira */
+    border: 2px solid white;
+    border-radius: 50%;       /* deixa a logo circular */
+}
+
+form {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+    margin-bottom: 20px;
+    text-align: center;
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 15px;
+    padding: 10px;
+    width: 100%;
+    color: white;
+}
+
+input::placeholder {
+    color: white;
+}
+
+button {
+    background-color: transparent;
+    border-radius: 15px;
+    border: 2px solid white;
+    padding: 10px;
+    width: 100%;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: black;
+    color: white;
+}

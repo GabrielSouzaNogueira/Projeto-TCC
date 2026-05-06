@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema gerenciamento</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <style>
+        /* Reset e Base */
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            color: #333;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 260px;
+            background-color: #ffffff;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            transition: width 0.3s;
+            overflow-y: auto;
+            z-index: 10;
+        }
+        .sidebar.collapsed { width: 70px; }
+        
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+        .logo { max-width: 140px; transition: opacity 0.3s; }
+        .sidebar.collapsed .logo { display: none; }
+        
+        .btn-toggle-sidebar {
+            background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #555;
+        }
+
+        .sidebar nav ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar nav ul li a {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #444;
+            font-weight: 500;
+            border-left: 4px solid transparent;
+            transition: all 0.2s;
+        }
+        .sidebar nav ul li a:hover, .sidebar nav ul li a.active {
+            background-color: #e3f2fd;
+            color: #1565c0;
+            border-left-color: #1565c0;
+        }
+        .sidebar nav ul li a i { width: 25px; text-align: center; margin-right: 10px; font-size: 1.1rem; }
+        .sidebar.collapsed nav ul li a span, 
+        .sidebar.collapsed .seta { display: none; }
+
+        /* Submenus */
+        .submenu { display: none; background-color: #f8f9fa; padding-left: 0; }
+        .submenu li a { padding-left: 50px; font-size: 0.95rem; }
+        .menu-group.open .submenu { display: block; }
+        .seta { margin-left: auto; font-size: 0.8rem; transition: transform 0.3s; }
+        .menu-group.open .seta { transform: rotate(180deg); }
+
+        .sidebar-footer { margin-top: auto; padding: 20px; border-top: 1px solid #eee; }
+        .btn-sair { color: #d32f2f !important; }
+
+        /* --- Main Content --- */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        h1 { margin-top: 0; color: #1a1a1a; font-size: 1.8rem; margin-bottom: 20px; }
+
+        /* Filtros e Formulários */
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        
+        .filtros-container { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .linha-filtros { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 15px; }
+        .filtro-item { flex: 1; min-width: 200px; }
+        
+        label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; }
+        input[type="text"], input[type="date"], input[type="time"], input[type="number"], input[type="email"], input[type="password"], select, textarea {
+            width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95rem; outline: none;
+        }
+        input:focus, select:focus, textarea:focus { border-color: #1976d2; }
+
+        /* Botões */
+        button { cursor: pointer; transition: opacity 0.2s; font-family: 'Inter', sans-serif; }
+        button:hover { opacity: 0.9; }
+        .btn-primary { background: #1976d2; color: white; border: none; padding: 10px 20px; border-radius: 6px; }
+        .btn-secondary { background: #757575; color: white; border: none; padding: 10px 20px; border-radius: 6px; }
+        .btn-success { background: #2e7d32; color: white; border: none; padding: 10px 20px; border-radius: 6px; }
+        .btn-danger { background: #d32f2f; color: white; border: none; padding: 10px 20px; border-radius: 6px; }
+        .btn-warning { background: #ed6c02; color: white; border: none; padding: 10px 20px; border-radius: 6px; }
+        .btn-info { background: #0288d1; color: white; border: none; padding: 10px 20px; border-radius: 6px; }
+
+        /* Tabelas */
+        .tabela-container { overflow-x: auto; margin-top: 20px; border-radius: 8px; border: 1px solid #eee; }
+        table { width: 100%; border-collapse: collapse; background: white; min-width: 600px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        th { background-color: #f8f9fa; font-weight: 600; color: #444; }
+        tr:hover { background-color: #f1f1f1; }
+
+        /* Badges da Auditoria */
+        .badge { padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; display: inline-block; }
+        .badge-azul { background-color: #e3f2fd; color: #1565c0; }
+        .badge-verde { background-color: #e8f5e9; color: #2e7d32; }
+        .badge-laranja { background-color: #fff3e0; color: #ef6c00; }
+        .badge-vermelho { background-color: #ffebee; color: #c62828; }
+
+        /* Modal */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5); backdrop-filter: blur(2px);
+        }
+        .modal-content {
+            background-color: white; margin: 10% auto; padding: 30px; border-radius: 10px; width: 50%; min-width: 300px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: slideDown 0.3s;
+        }
+        @keyframes slideDown { from {transform: translateY(-50px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+        .close { float: right; font-size: 28px; font-weight: bold; cursor: pointer; color: #aaa; }
+        .close:hover { color: #333; }
+    </style>
+</head>
+<body>
+
+    <div class="container-fluid" style="display: flex; width: 100%; height: 100%;">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3 class="logo" style="margin:0; color:#1976d2;">GERENCIADOR DE ESTOQUE</h3>
+                <button id="btnToggleSidebar" class="btn-toggle-sidebar" title="Expandir/Recolher Menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <nav>
+                <ul>
+                    <li>
+                        <a href="#" data-action="menu" class="active">
+                            <i class="fas fa-home"></i> <span>Início</span>
+                        </a>
+                    </li>
+
+                    <li class="menu-group">
+                        <a href="#" class="menu-toggle">
+                            <i class="fas fa-users"></i> <span>Usuários</span> <i class="fas fa-caret-down seta"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="#" data-action="novo_usuario"><i class="fas fa-user-plus"></i> Novo Usuário </a></li>
+                            <li><a href="#" data-action="auditoria"><i class="fas fa-history"></i> Histórico </a></li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <a href="#" data-action="ajuda">
+                            <i class="fas fa-question-circle"></i> <span>Ajuda</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" data-action="sair" class="btn-sair" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <div id="menuInicial" class="tela">
+                <h1>Painel de Controle</h1>
+                <p style="color: #666; margin-top: 10px;">Bem-vindo ao sistema administrativo.</p>
+            </div>
+
+            <div id="telaCadastroUsuario" class="tela" style="display:none;">
+                <h1>Novo Usuário</h1>
+                <p style="color: #666;">Preencha os dados conforme a classe Usuario do sistema.</p>
+                <div class="card">
+                    <div class="linha-filtros">
+                        <div class="filtro-item">
+                            <label for="userNome">Nome (Obrigatório):</label>
+                            <input type="text" id="userNome" placeholder="Nome completo" required>
+                        </div>
+                        <div class="filtro-item">
+                            <label for="userEmail">Email (Login):</label>
+                            <input type="email" id="userEmail" placeholder="exemplo@email.com" required>
+                        </div>
+                    </div>
+
+                    <div class="linha-filtros">
+                        <div class="filtro-item">
+                            <label for="userSenha">Senha (Obrigatório):</label>
+                            <input type="password" id="userSenha" placeholder="Digite a senha" required>
+                        </div>
+                        <div class="filtro-item">
+                            <label for="userTelefone">Telefone:</label>
+                            <input type="text" id="userTelefone" placeholder="(XX) XXXXX-XXXX">
+                        </div>
+                        <div class="filtro-item">
+                            <label for="userStatus">Status:</label>
+                            <select id="userStatus" class="select2-padrao">
+                                <option value="ATIVO">ATIVO</option>
+                                <option value="INATIVO">INATIVO</option>
+                                <option value="PENDENTE">PENDENTE</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: right; margin-top: 20px;">
+                        <button class="btn-success" onclick="salvarUsuario()">
+                            <i class="fas fa-save"></i> Salvar Usuário
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="telaAuditoria" class="tela" style="display:none;">
+                <h1>Histórico</h1>
+                
+                <div class="filtros-container">
+                    <div class="linha-filtros">
+                        <div class="filtro-item">
+                            <label>Filtrar por Usuário:</label>
+                            <input type="text" id="filtroAuditUser" placeholder="Nome do usuário...">
+                        </div>
+                        <div class="filtro-item">
+                            <label>Ação:</label>
+                            <select id="filtroAuditAcao" class="select2-padrao">
+                                <option value="">Todas</option>
+                                <option value="LOGIN">LOGIN</option>
+                                <option value="ALTERACAO">ALTERAÇÃO</option>
+                                <option value="CRIACAO">CRIAÇÃO</option>
+                                <option value="EXCLUSAO">EXCLUSÃO</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="carregarAuditoria()"><i class="fas fa-sync-alt"></i> Atualizar Lista</button>
+                </div>
+
+                <div class="card">
+                    <div class="tabela-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID </th>
+                                    <th>Data </th>
+                                    <th>Usuário </th>
+                                    <th>Ação </th>
+                                    <th>Campo Afetado </th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyAuditoria">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="telaAjuda" class="tela" style="display:none;">
+                <h1>Central de Ajuda</h1>
+                <div class="card">
+                    <h3>Como usar o sistema?</h3>
+                    <p>Utilize o menu lateral para navegar entre as opções.</p>
+                    <ul>
+                        <li><strong>Usuários:</strong> Para gerenciar acesso ao sistema.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="modalGlobal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal()">&times;</span>
+            <h2 id="modalTitulo">Aviso</h2>
+            <p id="modalMensagem">Mensagem aqui...</p>
+            <div style="text-align: right; margin-top: 20px;">
+                <button class="btn-primary" onclick="fecharModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Inicialização ---
+        $(document).ready(function() {
+            // Inicializa Select2
+            $('.select2-padrao').select2({
+                width: '100%'
+            });
+        });
+
+        // --- 2. Controle de Navegação (SPA) ---
+        const mapTelas = {
+            'menu': 'menuInicial',
+            'novo_usuario': 'telaCadastroUsuario',
+            'auditoria': 'telaAuditoria', // Nova rota
+            'ajuda': 'telaAjuda'
+        };
+
+        // Adiciona evento de clique em todos os links do menu
+        document.querySelectorAll('.sidebar nav a[data-action]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const acao = this.getAttribute('data-action');
+
+                if (acao === 'sair') {
+                    if(confirm("Deseja realmente sair?")) {
+                        window.location.reload();
+                    }
+                    return;
+                }
+
+                if (mapTelas[acao]) {
+                    // Esconde todas as telas
+                    document.querySelectorAll('.tela').forEach(t => t.style.display = 'none');
+                    // Mostra a selecionada
+                    document.getElementById(mapTelas[acao]).style.display = 'block';
+
+                    // Atualiza classe active no menu
+                    document.querySelectorAll('.sidebar nav a').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active'); // Adiciona ao clicado
+                    
+                    // Tratamento de submenus
+                    const parentLi = this.closest('.menu-group');
+                    if(parentLi) {
+                        const parentLink = parentLi.querySelector('.menu-toggle');
+                    }
+
+                    // Se for auditoria, carrega os dados (que agora virá vazio inicialmente)
+                    if(acao === 'auditoria') {
+                        carregarAuditoria();
+                    }
+                }
+            });
+        });
+
+        // --- 3. Sidebar Toggle ---
+        const btnToggle = document.getElementById('btnToggleSidebar');
+        const sidebar = document.querySelector('.sidebar');
+        
+        btnToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+
+        // --- 4. Submenus (Accordion) ---
+        document.querySelectorAll('.menu-toggle').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.parentElement.classList.toggle('open');
+            });
+        });
+
+        // --- 5. Funções de Negócio ---
+
+        // Função para Salvar Usuário (Conecta com a classe Usuario.java)
+        function salvarUsuario() {
+            // Captura os dados do formulário
+            const nome = $('#userNome').val();
+            const email = $('#userEmail').val();
+            const senha = $('#userSenha').val();
+            const telefone = $('#userTelefone').val();
+            const status = $('#userStatus').val();
+
+            // Validação simples
+            if (!nome || !email || !senha) {
+                mostrarModal("Erro", "Por favor, preencha os campos obrigatórios (Nome, Email e Senha).");
+                return;
+            }
+
+            // Objeto Usuario (DTO) pronto para ser enviado como JSON
+            const usuarioDTO = {
+                nome: nome,
+                email: email,
+                senha: senha, 
+                numeroTelefone1: telefone,
+                userStatus: status
+            };
+
+            // AJAX: Envio para o Backend
+            $.ajax({
+                url: '/api/usuarios', // Endpoint fictício
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(usuarioDTO),
+                success: function(response) {
+                    mostrarModal("Sucesso", "Usuário cadastrado com sucesso!");
+                    // Limpar formulário
+                    $('#userNome').val('');
+                    $('#userEmail').val('');
+                    $('#userSenha').val('');
+                    $('#userTelefone').val('');
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                    // Apenas para visualização (mock)
+                    mostrarModal("Simulação", "JSON gerado e pronto para envio: " + JSON.stringify(usuarioDTO));
+                }
+            });
+        }
+
+        // Função para Carregar Auditoria (Sem exemplos, apenas estrutura)
+        function carregarAuditoria() {
+            // Captura filtros
+            const filtroNome = $('#filtroAuditUser').val();
+            const filtroAcao = $('#filtroAuditAcao').val();
+
+            // Renderização da tabela (Limpeza)
+            const tbody = document.getElementById('tbodyAuditoria');
+            tbody.innerHTML = ''; // Garante que a tabela esteja vazia
+
+            /* AQUI FUTURAMENTE ENTRARÁ O CÓDIGO AJAX PARA BUSCAR DADOS REAIS:
+            $.get('/api/movimentacoes', { nome: filtroNome, acao: filtroAcao }, function(data) { ... });
+            */
+        }
+
+        // Modal Customizado
+        function mostrarModal(titulo, msg) {
+            document.getElementById('modalTitulo').innerText = titulo;
+            document.getElementById('modalMensagem').innerText = msg;
+            document.getElementById('modalGlobal').style.display = 'block';
+        }
+
+        function fecharModal() {
+            document.getElementById('modalGlobal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

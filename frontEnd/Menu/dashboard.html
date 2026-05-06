@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Gerenciamento</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style-dashboard.css">
+</head>
+<body>
+
+    <div class="container-fluid" style="display: flex; width: 100%; height: 100%;">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3 class="logo" style="margin:0; color:#1976d2;">GERENCIADOR DE ESTOQUE</h3>
+                <button id="btnToggleSidebar" class="btn-toggle-sidebar" title="Expandir/Recolher Menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <nav>
+                <ul>
+                    <li>
+                        <a href="#" data-action="menu" class="active">
+                            <i class="fas fa-home"></i> <span>Início</span>
+                        </a>
+                    </li>
+                    <li class="menu-group">
+                        <a href="#" class="menu-toggle">
+                            <i class="fas fa-users"></i> <span>Usuários</span> <i class="fas fa-caret-down seta"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="#" data-action="novo_usuario"><i class="fas fa-user-plus"></i> Novo Usuário </a></li>
+                            <li><a href="#" data-action="auditoria"><i class="fas fa-history"></i> Histórico </a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#" data-action="ajuda">
+                            <i class="fas fa-question-circle"></i> <span>Ajuda</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" data-action="sair" class="btn-sair" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <div id="menuInicial" class="tela">
+                <h1>Painel de Controle</h1>
+                <p style="color: #666; margin-top: 10px;">Bem-vindo ao sistema administrativo.</p>
+            </div>
+
+            <div id="telaCadastroUsuario" class="tela" style="display:none;">
+                <h1>Novo Usuário</h1>
+                <p style="color: #666;">Preencha os dados conforme a classe Usuario do sistema.</p>
+                <div class="card">
+                    <div class="linha-filtros">
+                        <div class="filtro-item">
+                            <label for="userNome">Nome (Obrigatório):</label>
+                            <input type="text" id="userNome" placeholder="Nome completo" required>
+                        </div>
+                        <div class="filtro-item">
+                            <label for="userEmail">Email (Login):</label>
+                            <input type="email" id="userEmail" placeholder="exemplo@email.com" required>
+                        </div>
+                    </div>
+                    <div class="linha-filtros">
+                        <div class="filtro-item">
+                            <label for="userSenha">Senha (Obrigatório):</label>
+                            <input type="password" id="userSenha" placeholder="Digite a senha" required>
+                        </div>
+                        <div class="filtro-item">
+                            <label for="userTelefone">Telefone:</label>
+                            <input type="text" id="userTelefone" placeholder="(XX) XXXXX-XXXX">
+                        </div>
+                    </div>
+                    <div style="text-align: right; margin-top: 20px;">
+                        <button class="btn-success" onclick="salvarUsuario()">
+                            <i class="fas fa-save"></i> Salvar Usuário
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="telaAuditoria" class="tela" style="display:none;">
+                <h1>Histórico</h1>
+                <div class="filtros-container">
+                    <div class="linha-filtros">
+                        <div class="filtro-item">
+                            <label>Filtrar por Usuário:</label>
+                            <input type="text" id="filtroAuditUser" placeholder="Nome do usuário...">
+                        </div>
+                        <div class="filtro-item">
+                            <label>Ação:</label>
+                            <select id="filtroAuditAcao" class="select2-padrao">
+                                <option value="">Todas</option>
+                                <option value="LOGIN">LOGIN</option>
+                                <option value="ALTERACAO">ALTERAÇÃO</option>
+                                <option value="CRIACAO">CRIAÇÃO</option>
+                                <option value="EXCLUSAO">EXCLUSÃO</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="carregarAuditoria()"><i class="fas fa-sync-alt"></i> Atualizar Lista</button>
+                </div>
+                <div class="card">
+                    <div class="tabela-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID </th>
+                                    <th>Data </th>
+                                    <th>Usuário </th>
+                                    <th>Ação </th>
+                                    <th>Campo Afetado </th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyAuditoria"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="telaAjuda" class="tela" style="display:none;">
+                <h1>Central de Ajuda</h1>
+                <div class="card">
+                    <h3>Como usar o sistema?</h3>
+                    <p>Utilize o menu lateral para navegar entre as opções.</p>
+                    <ul>
+                        <li><strong>Usuários:</strong> Para gerenciar acesso ao sistema.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="modalGlobal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal()">&times;</span>
+            <h2 id="modalTitulo">Aviso</h2>
+            <p id="modalMensagem">Mensagem aqui...</p>
+            <div style="text-align: right; margin-top: 20px;">
+                <button class="btn-primary" onclick="fecharModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <script src="script-dashboard.js"></script>
+</body>
+</html>
