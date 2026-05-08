@@ -15,6 +15,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Libera CORS para todos os endpoints da aplicação
                     .allowedOrigins("http://127.0.0.1:5500") // Permite requisições vindas do frontend rodando nessa origem
+                        .allowedOrigins("http://localhost:5173")
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Métodos HTTP permitidos
                     .allowedHeaders("*") // Permite todos os cabeçalhos
                     .allowCredentials(true); // Permite envio de cookies/credenciais junto com a requisição

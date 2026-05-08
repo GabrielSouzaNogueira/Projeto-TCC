@@ -1,0 +1,75 @@
+// ////////////////////////////////////////////////// //
+// primeiro //
+
+// Importamos o React
+import React from 'react';
+// Importamos o componente 'Navigate' que serve para redirecionar o usuário forçadamente
+import { Navigate } from 'react-router-dom';
+
+// O 'children' é uma propriedade especial do React. 
+// Ele representa "a tela que o usuário está tentando acessar" (no nosso caso, a Dashboard).
+export default function ProtectedRoute({ children }) {
+  
+  // 1. O Segurança verifica o crachá:
+  // Ele vai no navegador (localStorage) e olha se a chave "auth" tem a palavra "true"
+  const temCracha = localStorage.getItem("auth") === "true";
+
+  // 2. A regra de negócio:
+  if (!temCracha) {
+    // Se o usuário NÃO tem o crachá, o segurança o chuta de volta para a tela de Login ("/")
+    return <Navigate to="/" />;
+  }
+
+  // Se o código chegou até aqui, é porque ele tem o crachá!
+  // Então o segurança abre a porta e renderiza o 'children' (a tela protegida)
+  return children;
+}
+
+ // ///////////////////////////////////////////////////////////////////// //
+
+ // Seugundo //
+
+import React, { useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
+
+export default function ProtectedRoute({ children }) {
+  
+  // Transformamos a verificação do crachá em um Estado.
+  // Isso é necessário porque o React só atualiza a tela se um Estado mudar.
+  const [temCracha, setTemCracha] = useState(localStorage.getItem("auth") === "true");
+
+  // O useEffect é um "efeito colateral" que roda assim que o componente nasce na tela.
+  useEffect(() => {
+    
+    // 1. Criamos a função que vai ser disparada quando o alarme do navegador tocar
+    const escutarAbas = (evento) => {
+      // O evento de 'storage' avisa qual chave foi alterada.
+      // Se a chave alterada foi a "auth" e o novo valor dela é nulo (foi apagada)...
+      if (evento.key === "auth" && evento.newValue === null) {
+        // ...nós mudamos o estado para falso!
+        setTemCracha(false);
+      }
+    };
+
+    // 2. Colocamos o "escutador" grudado na janela (window) do navegador
+    window.addEventListener("storage", escutarAbas);
+
+    // 3. Função de limpeza (Boa prática do React):
+    // Se o usuário sair dessa tela, nós removemos o escutador para não pesar a memória
+    return () => {
+      window.removeEventListener("storage", escutarAbas);
+    };
+    
+  }, []); // Os colchetes vazios significam: "Rode este escutador apenas uma vez quando a tela abrir"
+
+  // A regra do segurança continua a mesma:
+  if (!temCracha) {
+    // Se o crachá for falso (seja porque ele acabou de abrir a página sem logar, 
+    // ou porque outra aba avisou que ele deslogou), chuta para o Login!
+    // O 'replace' apaga o histórico, impedindo que o usuário volte clicando na setinha do navegador.
+    return <Navigate to="/" replace />;
+  }
+
+  // Se tem o crachá, mostra a página protegida
+  return children;
+}

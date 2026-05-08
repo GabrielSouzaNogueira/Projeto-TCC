@@ -1,0 +1,53 @@
+// ////////////////////////////////////////////////////////// //
+// Primeiro //
+
+// Importa a biblioteca principal do React para podermos usar seus recursos.
+import React from 'react';
+
+// Importa um arquivo de CSS para estilizar especificamente esta tela.
+import './App.css';
+
+// No React, uma tela (ou um pedaço dela) é apenas uma função JavaScript.
+// O nome da função sempre começa com letra maiúscula (Regra do React).
+function App() {
+
+  // 1. ÁREA DA LÓGICA (O "INIT")
+  // Aqui dentro, antes do 'return', é onde escrevemos nosso JavaScript puro.
+  // Criamos uma variável constante para guardar o título da nossa página.
+  const tituloDaPagina = "Meu Primeiro Sistema em React";
+
+  // 2. ÁREA DA RENDERIZAÇÃO (O "RENDER")
+  // O 'return' é o que efetivamente vai aparecer na tela do usuário.
+  // Aqui começa o JSX: a mistura de HTML com JavaScript.
+  return (
+
+    // No React, todo o HTML precisa estar dentro de uma única "caixa" (tag pai).
+    // Usamos uma div. IMPORTANTE: no React, usamos 'className' em vez de 'class'.
+    <div className="container-principal">
+      
+      {/* Criamos um título H1. */}
+      {/* Usamos as chaves { } para injetar uma variável do JavaScript direto no HTML! */}
+      <h1>{tituloDaPagina}</h1>
+      
+      {/* Um parágrafo HTML comum para adicionar um texto. */}
+      <p>Estamos começando do absoluto zero, nível por nível.</p>
+
+      {/* Criamos um botão simples. */}
+      {/* O 'onClick' é como o 'addEventListener("click")' que você usava antes, só que mais fácil. */}
+      {/* Passamos uma função anônima () => que dispara um alerta quando clicado. */}
+      <button onClick={() => alert("O React está funcionando!")}>
+        Clique em mim
+      </button>
+
+    {/* Fechamento da div principal (nossa tag pai). */}
+    </div>
+
+  // Fim do bloco de retorno (renderização).
+  );
+
+// Fim da função que define o nosso componente App.
+}
+
+// Exporta o componente App para que o React possa pegá-lo e desenhá-lo no navegador principal.
+export default App;
+

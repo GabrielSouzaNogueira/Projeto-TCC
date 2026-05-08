@@ -20,7 +20,6 @@ import by.gabriel.gerenciadorEstoque.Services.UserService;
 @RequestMapping("/usuario")
 public class UserController {
 
-    Usuario usuario;
     private final UserService userService;
 
     //INICIALIZANDO A CLASSE DO SERVICE
@@ -44,7 +43,7 @@ public class UserController {
     public ResponseEntity<ResponseDTO> cadastrar(@RequestBody UserDTO dto) {
 
         // Chama o service para realizar o cadastro do usuário
-        usuario = userService.cadastroUser(dto);
+        Usuario usuario = userService.cadastroUser(dto);
 
         //Caso tenha conseguido realizar o login normalmente eu devolvo a resposta para o cliente
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO(

@@ -1,0 +1,206 @@
+// /////////////////////////////////////////////////////////// //
+// primeiro //
+
+// Importamos o React
+import React from 'react';
+// Importamos o arquivo CSS que vamos criar no próximo passo, exclusivo para esta tela
+import './Dashboard.css';
+import { useNavigate } from 'react-router-dom';
+// Criamos e exportamos o componente Dashboard
+export default function Dashboard() {
+  const navigate = useNavigate();
+  // Função simples para simular o botão de sair (Logout)
+  const handleLogout = () => {
+    // 1. Arranca o crachá do usuário (limpa a memória do navegador)
+    localStorage.removeItem("auth");
+    // 2. Manda ele de volta para a tela de Login
+    navigate("/");
+  };
+
+  return (
+    // 'dashboard-layout' é o container pai. Ele vai usar Flexbox no CSS
+    // para colocar a Sidebar na esquerda e o Conteúdo na direita.
+    <div className="dashboard-layout">
+      
+      {/* ==========================================
+          BARRA LATERAL (SIDEBAR)
+          ========================================== */}
+      <aside className="sidebar">
+        <h3>Meu Sistema</h3>
+        
+        {/* 'nav' é a tag HTML correta para menus de navegação */}
+        <nav className="menu-lateral">
+          {/* Adicionamos a classe 'ativo' no botão Dashboard para mostrar onde estamos */}
+          <button className="menu-btn ativo">Visão Geral</button>
+          <button className="menu-btn">Usuários</button>
+          <button className="menu-btn">Produtos</button>
+        </nav>
+
+        {/* Botão de sair fica no final da barra lateral */}
+        <button className="logout-btn" onClick={handleLogout}>
+          Sair
+        </button>
+      </aside>
+
+      {/* ==========================================
+          ÁREA DE CONTEÚDO PRINCIPAL
+          ========================================== */}
+      {/* Aqui é onde as páginas reais vão aparecer (como aquela sua lista de usuários) */}
+      <main className="conteudo-principal">
+        
+        {/* Título da tela atual */}
+        <h1>Controle de Estoque</h1>
+        <p>Bem-vindo ao painel de controle. Aqui vamos gerenciar as mercadorias.</p>
+        
+        {/* Um pequeno 'card' (cartão) de informação só para a tela não ficar vazia por enquanto */}
+        <div className="card-info">
+          <h4>Total de Produtos</h4>
+          <p>0 itens cadastrados</p>
+        </div>
+
+      </main>
+
+    </div>
+  );
+}
+
+// ///////////////////////////////////////////////////////////////////////////////// //
+// Segundo //
+
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Dashboard.css';
+
+// ======= IMPORTAMOS O NOSSO COMPONENTE DE CADASTRO =======
+import CadastroUsuario from './CadastroUsuario';
+
+export default function Dashboard() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("auth");
+    navigate("/");
+  };
+
+  return (
+    <div className="dashboard-layout">
+      <aside className="sidebar">
+        {/* ... (Seu código da sidebar continua igualzinho) ... */}
+        <h3>Meu Sistema</h3>
+        <nav className="menu-lateral">
+          <button className="menu-btn ativo">Usuários</button>
+          <button className="menu-btn">Produtos</button>
+        </nav>
+        <button className="logout-btn" onClick={handleLogout}>Sair</button>
+      </aside>
+
+      <main className="conteudo-principal">
+        
+        {/* Substituímos aquele cartãozinho de exemplo pelo seu FORMULÁRIO REAL! */}
+        <CadastroUsuario />
+
+      </main>
+    </div>
+  );
+}
+
+// //////////////////////////////////////////////////////// //
+
+// Terceiro //
+
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Dashboard.css';
+
+// Importamos os nossos componentes
+import CadastroUsuario from './CadastroUsuario';
+
+export default function Dashboard() {
+  const navigate = useNavigate();
+
+  // ==========================================
+  // ESTADO DE NAVEGAÇÃO INTERNA
+  // Começa na 'home' para dar as boas-vindas
+  // ==========================================
+  const [telaAtiva, setTelaAtiva] = useState("home");
+
+  const handleLogout = () => {
+    localStorage.removeItem("auth");
+    navigate("/");
+  };
+
+  // ==========================================
+  // FUNÇÃO DE ROTEAMENTO INTERNO
+  // Essa função decide o que vai aparecer no "miolo" da página
+  // ==========================================
+  const renderizarConteudo = () => {
+    // Se a tela ativa for 'home', mostra a mensagem de boas-vindas
+    if (telaAtiva === "home") {
+      return (
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+          <h2 style={{ fontSize: '2rem', color: '#2c3e50' }}>Bem-vindo ao Sistema! </h2>
+          <p style={{ color: '#7f8c8d', fontSize: '1.2rem' }}>
+            Selecione uma opção no menu lateral para começar a trabalhar.
+          </p>
+        </div>
+      );
+    }
+    
+    // Se a tela ativa for 'cadastroUsuario', chama o nosso componente de formulário
+    if (telaAtiva === "cadastroUsuario") {
+      return <CadastroUsuario />;
+    }
+
+    // Se for 'produtos', mostra uma tela temporária
+    if (telaAtiva === "produtos") {
+      return <h2>Área de Produtos (Em desenvolvimento...) </h2>;
+    }
+  };
+
+  return (
+    <div className="dashboard-layout">
+      
+      {/* ================= BARRA LATERAL ================= */}
+      <aside className="sidebar">
+        <h3>Meu Sistema</h3>
+        
+        <nav className="menu-lateral">
+          {/* O botão agora faz duas coisas:
+            1. onClick: Muda a tela ativa para "home"
+            2. className dinâmica: Se a tela ativa for "home", ele ganha a classe 'ativo' (que deixa ele azul escuro)
+          */}
+          <button 
+            className={`menu-btn ${telaAtiva === "home" ? "ativo" : ""}`}
+            onClick={() => setTelaAtiva("home")}
+          >
+            Início
+          </button>
+          
+          <button 
+            className={`menu-btn ${telaAtiva === "cadastroUsuario" ? "ativo" : ""}`}
+            onClick={() => setTelaAtiva("cadastroUsuario")}
+          >
+            Novo Usuário
+          </button>
+          
+          <button 
+            className={`menu-btn ${telaAtiva === "produtos" ? "ativo" : ""}`}
+            onClick={() => setTelaAtiva("produtos")}
+          >
+            Produtos
+          </button>
+        </nav>
+        
+        <button className="logout-btn" onClick={handleLogout}>Sair</button>
+      </aside>
+
+      {/* ================= ÁREA PRINCIPAL ================= */}
+      <main className="conteudo-principal">
+        
+        {/* Aqui nós simplesmente chamamos a função que decide o que desenhar! */}
+        {renderizarConteudo()}
+
+      </main>
+    </div>
+  );
+}
