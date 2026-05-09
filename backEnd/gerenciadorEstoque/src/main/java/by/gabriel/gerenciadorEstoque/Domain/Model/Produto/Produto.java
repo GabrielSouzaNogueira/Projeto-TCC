@@ -1,7 +1,8 @@
 package by.gabriel.gerenciadorEstoque.Domain.Model.Produto;
 
-import by.gabriel.gerenciadorEstoque.Domain.ExceptionProd.CostOrSellBellowZero;
+import by.gabriel.gerenciadorEstoque.Domain.ExceptionProd.CostOrSellBellowZeroException;
 import by.gabriel.gerenciadorEstoque.Domain.ExceptionProd.HigherCostToSellException;
+import by.gabriel.gerenciadorEstoque.Domain.ExceptionProd.PrecosNotNullException;
 import by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacoes.MovProd;
 import by.gabriel.gerenciadorEstoque.Enum.Produto.ProdStatus;
 import jakarta.persistence.*;
@@ -40,14 +41,18 @@ public class Produto {
         this.nome = nome;
         this.codBarra = codBarra;
         this.quantidade = quantidade;
-        validarPreco(precoCusto, precoVenda);
         this.precoCusto = precoCusto;
         this.precoVenda = precoVenda;
+        validarPreco(precoCusto, precoVenda);
         this.prodStatus = prodStatus;
     }
 
     //Metodo para validar os preços no momento do cadastro
     public void validarPreco(BigDecimal custo, BigDecimal venda) {
+
+        if (custo == null || venda == null) {
+            throw  new PrecosNotNullException("Os Preços de custo e venda não podem ser nulos");
+        }
 
         if (precoCusto.compareTo(precoVenda) > 0 || precoVenda.compareTo(precoCusto) < 0) {
 
@@ -57,7 +62,7 @@ public class Produto {
 
         if (precoCusto.compareTo(BigDecimal.ZERO) <= 0 || precoVenda.compareTo(BigDecimal.ZERO) <= 0) {
 
-            throw new CostOrSellBellowZero("Preço de custo ou venda menor ou igual a zero");
+            throw new CostOrSellBellowZeroException("Preço de custo ou venda menor ou igual a zero");
 
         }
     }
