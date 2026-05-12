@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration // Indica que esta classe é uma configuração do Spring
+@Configuration
 public class CorsConfig {
 
     @Bean // Define um bean gerenciado pelo Spring

@@ -19,11 +19,10 @@ public class MovUserService {
         List<MovUserDTO> movimentacoes = movUserRepository.listAllMov();
 
         if(movimentacoes.isEmpty()) {
-            // Dica: Em listagens, as vezes é melhor retornar lista vazia []
-            // do que estourar uma exceção, mas se for regra de negócio, mantenha:
+
             throw new IllegalArgumentException("Nenhuma movimentação registrada");
         }
 
-        return movimentacoes; // ANTES ESTAVA: return listAllMov(); -> ISSO GERAVA LOOP INFINITO
+        return movimentacoes;
     }
 }

@@ -65,16 +65,18 @@ export default function Login() {
 
     // Se a resposta for 200 OK, processa o retorno
     if (resposta.ok) {
-      // Converte o corpo da resposta para objeto JavaScript
       const dados = await resposta.json();
 
-      // Marca autenticação no localStorage para persistência simples
       localStorage.setItem("auth", "true");
 
-      // Armazena dados do usuário logado (por exemplo: token, nome) no localStorage
-      localStorage.setItem("userLogged", JSON.stringify(dados));
+      // EM VEZ DE SALVAR SÓ O 'DADOS', VAMOS SALVAR O NOME QUE VOCÊ DIGITOU
+      const usuarioParaSalvar = {
+        nome: usuario, // Aqui pegamos o estado 'usuario' do seu formulário
+        logadoEm: dados.timestamp
+      };
 
-      // Navega para a área restrita do app
+      localStorage.setItem("userLogged", JSON.stringify(usuarioParaSalvar));
+
       navigate("/dashboard");
 
     // Se o backend retornar 401, informa credenciais inválidas ao usuário

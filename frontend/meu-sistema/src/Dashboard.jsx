@@ -1,78 +1,91 @@
-// 1. Adicionamos o useEffect na importação do React
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 
+// Importação dos seus componentes de formulário
 import CadastroUsuario from './CadastroUsuario';
+import CadastroProduto from './CadastroProduto';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  
+  // Estado que controla qual componente será exibido na área principal
   const [telaAtiva, setTelaAtiva] = useState("home");
 
-  // ==========================================
-  // O ALARME DEFINITIVO (Sincronização de Abas)
-  // ==========================================
+  // Recupera o nome do usuário salvo no login para personalizar a recepção
+  const [nomeUsuario, setNomeUsuario] = useState("");
+
   useEffect(() => {
+    // Busca os dados do usuário no localStorage para exibir o nome no Dashboard
+    const user = JSON.parse(localStorage.getItem("userLogged"));
+    if (user && user.nome) {
+      setNomeUsuario(user.nome);
+    }
+
+    // ==========================================
+    // SINCRONIZAÇÃO DE LOGOUT ENTRE ABAS
+    // ==========================================
     const escutarOutrasAbas = (evento) => {
-      // O navegador avisa: "A chave 'auth' mudou!"
-      // Se o novo valor for null (ou seja, alguém clicou em Sair em outra aba)
+      // Se a chave 'auth' sumir de qualquer aba, desloga esta aba também
       if (evento.key === "auth" && evento.newValue === null) {
-        // Chuta o usuário para a tela de login na mesma fração de segundo
         navigate("/");
       }
     };
 
-    // Liga o escutador no navegador
     window.addEventListener("storage", escutarOutrasAbas);
 
-    // Desliga o escutador se a página for fechada
+    // Cleanup: Remove o escutador ao desmontar o componente
     return () => {
       window.removeEventListener("storage", escutarOutrasAbas);
     };
-  }, [navigate]); 
-  // O colchete com 'navigate' avisa ao React que essa função depende do roteador.
+  }, [navigate]);
 
   // ==========================================
-  // FUNÇÃO DO BOTÃO SAIR DESTA ABA
+  // FUNÇÃO DE LOGOUT
   // ==========================================
   const handleLogout = () => {
-    localStorage.removeItem("auth");
-    navigate("/");
+    localStorage.removeItem("auth"); // Remove a permissão
+    localStorage.removeItem("userLogged"); // Limpa dados do usuário
+    navigate("/"); // Redireciona para login
   };
 
+  // ==========================================
+  // LÓGICA DE NAVEGAÇÃO INTERNA (SWITCH CASE)
+  // ==========================================
   const renderizarConteudo = () => {
-    if (telaAtiva === "home") {
-      return (
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
-          <h2 style={{ fontSize: '2rem', color: '#2c3e50' }}>Bem-vindo ao Sistema! </h2>
-          <p style={{ color: '#7f8c8d', fontSize: '1.2rem' }}>
-            Selecione uma opção no menu lateral para começar a trabalhar.
-          </p>
-        </div>
-      );
-    }
-    
-    if (telaAtiva === "cadastroUsuario") {
-      return <CadastroUsuario />;
-    }
+    switch (telaAtiva) {
+      case "home":
+        return (
+          <div className="home-welcome">
+            <h2>Olá, {nomeUsuario || "Bem-vindo"}!</h2>
+            <p>Selecione uma opção no menu lateral para gerenciar seu sistema.</p>
+            {/* Você pode adicionar cards de resumo aqui no futuro */}
+          </div>
+        );
+      
+      case "cadastroUsuario":
+        return <CadastroUsuario />;
 
-    if (telaAtiva === "produtos") {
-      return <h2>Área de Produtos</h2>;
+      case "produtos":
+        return <CadastroProduto />;
+
+      default:
+        return <div className="error-screen">Ops! Tela não encontrada.</div>;
     }
   };
 
   return (
     <div className="dashboard-layout">
       
-      {/* ================= BARRA LATERAL ================= */}
+      {/* ================= BARRA LATERAL (SIDEBAR) ================= */}
       <aside className="sidebar">
-        <h3>Meu Sistema</h3>
+        <div className="sidebar-logo">
+          <h3>Controle de Estoque</h3>
+        </div>
         
         <nav className="menu-lateral">
-          {/* O botão agora faz duas coisas:
-            1. onClick: Muda a tela ativa para "home"
-            2. className dinâmica: Se a tela ativa for "home", ele ganha a classe 'ativo' (que deixa ele azul escuro)
-          */}
+          {/* GRUPO PRINCIPAL */}
+          <span className="menu-category">Navegação</span>
           <button 
             className={`menu-btn ${telaAtiva === "home" ? "ativo" : ""}`}
             onClick={() => setTelaAtiva("home")}
@@ -80,31 +93,46 @@ export default function Dashboard() {
             Início
           </button>
           
-          <button 
-            className={`menu-btn ${telaAtiva === "cadastroUsuario" ? "ativo" : ""}`}
-            onClick={() => setTelaAtiva("cadastroUsuario")}
-          >
-            Novo Usuário
-          </button>
-          
+          {/* GRUPO DE OPERAÇÕES */}
+          <span className="menu-category">Operacional</span>
           <button 
             className={`menu-btn ${telaAtiva === "produtos" ? "ativo" : ""}`}
             onClick={() => setTelaAtiva("produtos")}
           >
-            Produtos
+            Estoque de Produtos
+          </button>
+
+          {/* GRUPO ADMINISTRATIVO */}
+          <span className="menu-category">Administração</span>
+          <button 
+            className={`menu-btn ${telaAtiva === "cadastroUsuario" ? "ativo" : ""}`}
+            onClick={() => setTelaAtiva("cadastroUsuario")}
+          >
+            Gerenciar Usuários
           </button>
         </nav>
         
-        <button className="logout-btn" onClick={handleLogout}>Sair</button>
+        {/* RODAPÉ DA SIDEBAR */}
+        <div className="sidebar-footer">
+          <button className="logout-btn" onClick={handleLogout}>
+            Sair do Sistema
+          </button>
+        </div>
       </aside>
 
-      {/* ================= ÁREA PRINCIPAL ================= */}
+      {/* ================= ÁREA DE CONTEÚDO PRINCIPAL ================= */}
       <main className="conteudo-principal">
-        
-        {/* Aqui nós simplesmente chamamos a função que decide o que desenhar! */}
-        {renderizarConteudo()}
+        {/* Cabeçalho superior (Breadcrumb) para indicar onde o usuário está */}
+        <header className="content-header">
+          <p>Dashboard / <strong>{telaAtiva === "home" ? "Início" : telaAtiva}</strong></p>
+        </header>
 
+        {/* Injeção do componente selecionado */}
+        <div className="content-body">
+          {renderizarConteudo()}
+        </div>
       </main>
+
     </div>
   );
 }

@@ -26,7 +26,7 @@ public class UserService {
    private final UserRepository userRepository;
    private final MovUserRepository movUserRepository;
 
-   //Incializando o usuarioRepository (banco de dados)
+
     public UserService(UserRepository userRepository,MovUserRepository movUserRepository) {
         this.userRepository = userRepository;
         this.movUserRepository = movUserRepository;
@@ -46,7 +46,7 @@ public class UserService {
     }
 
 
-        // Método para logar usuario
+
     public boolean logarUsuario(UserDTO dto) {
 
         // Validações obrigatórias
@@ -79,6 +79,7 @@ public class UserService {
 
 
     //Metodo para cadastrar Usuario
+    @Transactional
     public Usuario cadastroUser(UserDTO dto) {
 
         // Se email foi informado, valida duplicidade

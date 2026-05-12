@@ -37,17 +37,17 @@ public class ProdService {
         Usuario usuario = userRepository.findByNomeIgnoreCase(username)
                 .orElseThrow(() -> new RuntimeException("Usuario " + username + " não encontrado"));
 
-        // 1. Validações básicas (Check de Nulo)
+
         if(dto.nome() == null || dto.nome().isBlank()) throw new IllegalArgumentException("Nome obrigatório");
         if(dto.codBarra() == null || dto.codBarra().length() < 13) throw new IllegalArgumentException("Código de barras inválido");
         if(dto.quantidade() == null || dto.quantidade() <= 0) throw new IllegalArgumentException("Quantidade deve ser maior que zero");
 
-        // 2. Validação de Preços (Garantir que não são nulos antes do compareTo)
+
         if(dto.precoCusto() == null || dto.precoVenda() == null) {
             throw new IllegalArgumentException("Preços não podem ser nulos");
         }
 
-        // 4. Cria o Produto (Agora os dados estão limpos e validados)
+
         Produto produto = new Produto(
                 dto.nome(),
                 dto.codBarra(),
@@ -59,7 +59,7 @@ public class ProdService {
 
         produto = produtoRepository.save(produto);
 
-        // 5. Registra a Movimentação
+
         MovProd movProd = new MovProd(
                 MovProdAcao.CRIACAO,
                 MovProdCampo.NENHUM,
@@ -100,7 +100,6 @@ public class ProdService {
                 throw new NomeProdVazioException("Nome do produto não pode ser vazio");
             }
 
-            // CORREÇÃO: Alterando o nome do PRODUTO, não do USUÁRIO
             produto.setNome(dto.nome().toLowerCase());
 
             movProd = new MovProd(MovProdAcao.ATUALIZACAO, MovProdCampo.NOME, produto, usuario, usuario.getNome(), usuario.getUserCargo());
@@ -136,7 +135,7 @@ public class ProdService {
 
         // PREÇO DE CUSTO
         if (dto.precoCusto() != null) {
-            // Valida se custo > 0 e se custo < venda atual do produto
+
             if (dto.precoCusto().compareTo(BigDecimal.ZERO) <= 0 || dto.precoCusto().compareTo(produto.getPrecoVenda()) > 0) {
                 throw new CostOrSellBellowZeroException("Preço de Custo inválido: deve ser maior que zero e menor que a venda");
             }
@@ -148,7 +147,7 @@ public class ProdService {
 
         // PREÇO DE VENDA
         if (dto.precoVenda() != null) {
-            // Valida se venda > 0 e se venda > custo atual do produto
+
             if (dto.precoVenda().compareTo(BigDecimal.ZERO) <= 0 || dto.precoVenda().compareTo(produto.getPrecoCusto()) < 0) {
                 throw new CostOrSellBellowZeroException("Preço de Venda inválido: deve ser maior que zero e maior que o custo");
             }
@@ -158,7 +157,6 @@ public class ProdService {
             movProdRepository.save(movProd);
         }
 
-        // Salva o estado final do produto
         return produtoRepository.save(produto);
     }
 

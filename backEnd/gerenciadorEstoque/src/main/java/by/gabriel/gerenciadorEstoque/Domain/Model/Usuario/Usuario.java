@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserStatus;
-import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserStatusLogin;
 import by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacoes.MovUser;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,7 +50,7 @@ public class Usuario {
 
     // Relacionamento com MovUser
     @JsonIgnore
-    @OneToMany(mappedBy = "usuario") // opção do cascade, ele seria um facilitador para menos código mas nao afeta os dados
+    @OneToMany(mappedBy = "usuario")
     private List<MovUser> movimentacoes;
 
     public Usuario() {
