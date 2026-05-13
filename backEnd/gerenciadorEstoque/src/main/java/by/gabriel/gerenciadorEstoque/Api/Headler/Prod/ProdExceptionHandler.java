@@ -68,5 +68,23 @@ public class ProdExceptionHandler {
                 .body(new ResponseDTO(false, "Codigo de barras não pode ser vazio", "COD_BARRA_NULL", Instant.now().toString()));
     }
 
+    @ExceptionHandler(ListaProdVaziaException.class)
+    public ResponseEntity<ResponseDTO> handlerListaProdVaziaException(ListaProdVaziaException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ResponseDTO(false, "Não possui nenhum produto cadastrado no sistema", "SEM_REGISTRO_BANCO", Instant.now().toString()));
+    }
 
+    @ExceptionHandler(NomeProdJaExistenteException.class)
+    public ResponseEntity<ResponseDTO> handlerNomeProdJaExistenteException(NomeProdJaExistenteException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ResponseDTO(false, "Nome do produto já cadastrado", "NOME_PROD_EXISTENTE", Instant.now().toString()));
+    }
+
+    @ExceptionHandler(CodBarraExistenteException.class)
+    public ResponseEntity<ResponseDTO> handlerCodBarraExistenteException(CodBarraExistenteException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ResponseDTO(false, "Código de barras já registrado.", "COD_BARRA_EXISTENTE", Instant.now().toString()));
+    }
+
+    //
 }

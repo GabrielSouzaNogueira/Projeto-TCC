@@ -1,5 +1,6 @@
 package by.gabriel.gerenciadorEstoque.Api.Controller;
 
+import by.gabriel.gerenciadorEstoque.Api.DTO.Produto.Consultas.SelectAllProdDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.Produto.ProdutoDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.Produto.UpdateProdDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.Response.ResponseDTO;
@@ -12,7 +13,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/produto")
@@ -23,6 +26,16 @@ public class ProdController {
     public  ProdController(ProdService prodService) {
         this.prodService = prodService;
     }
+
+    @GetMapping("/listProd")
+    public ResponseEntity<List<SelectAllProdDTO>> listAllProd() {
+
+        List<SelectAllProdDTO> listados = prodService.listAllProd();
+
+        return ResponseEntity.ok(listados);
+
+    }
+
 
     @PostMapping("/cadastro")
     public ResponseEntity<ResponseDTO> cadastroProd(@RequestBody @Validated ProdutoDTO dto, @RequestHeader("X-Usuario-Logado") String usuarioLogado) {
@@ -56,5 +69,26 @@ public class ProdController {
 
     }
 
+    @PatchMapping("/delete/{id}")
+    public ResponseEntity<ResponseDTO> deleteProd(@PathVariable Long id, @RequestHeader("X-Usuario") String username) {
 
+        boolean produtoDeletado = prodService.deletarProd(id, username);
+
+
+        if(produtoDeletado) {
+            return ResponseEntity.ok(new ResponseDTO(
+                    true,
+                    "Produto deletado com sucesso!",
+                    Instant.now().toString())
+            );
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDTO(
+                    false,
+                    "Algo deu errado na deelção do produto",
+                    "BAD_DELETE", Instant.now().toString())
+            );
+        }
+
+    }
 }

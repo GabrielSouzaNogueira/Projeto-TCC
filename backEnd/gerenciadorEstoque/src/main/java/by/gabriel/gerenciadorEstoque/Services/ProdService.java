@@ -1,8 +1,10 @@
 package by.gabriel.gerenciadorEstoque.Services;
 
+import by.gabriel.gerenciadorEstoque.Api.DTO.Produto.Consultas.SelectAllProdDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.Produto.ProdutoDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.Produto.UpdateProdDTO;
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNotFoundException;
+import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNotPermission;
 import by.gabriel.gerenciadorEstoque.Domain.ExceptionProd.*;
 import by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacoes.MovProd;
 import by.gabriel.gerenciadorEstoque.Domain.Model.Produto.Produto;
@@ -10,6 +12,7 @@ import by.gabriel.gerenciadorEstoque.Domain.Model.Usuario.Usuario;
 import by.gabriel.gerenciadorEstoque.Enum.Movimentacao.Produto.MovProdAcao;
 import by.gabriel.gerenciadorEstoque.Enum.Movimentacao.Produto.MovProdCampo;
 import by.gabriel.gerenciadorEstoque.Enum.Produto.ProdStatus;
+import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserCargo;
 import by.gabriel.gerenciadorEstoque.Repository.Movimentacao.MovProdRepository;
 import by.gabriel.gerenciadorEstoque.Repository.Produto.ProdutoRepository;
 import by.gabriel.gerenciadorEstoque.Repository.Usuario.UserRepository;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class ProdService {
@@ -31,6 +35,20 @@ public class ProdService {
     @Autowired
     private MovProdRepository movProdRepository;
 
+
+    public List<SelectAllProdDTO> listAllProd() {
+
+        List<SelectAllProdDTO> listados = produtoRepository.findByStatusCustom(ProdStatus.ATIVO);
+
+        if (listados.isEmpty()) {
+
+            throw new ListaProdVaziaException("Não possui nenhum registro no banco de dados");
+        }
+
+        return listados;
+    }
+
+
     @Transactional
     public Produto cadastrarProduto(ProdutoDTO dto, String username) {
 
@@ -38,10 +56,21 @@ public class ProdService {
                 .orElseThrow(() -> new RuntimeException("Usuario " + username + " não encontrado"));
 
 
-        if(dto.nome() == null || dto.nome().isBlank()) throw new IllegalArgumentException("Nome obrigatório");
-        if(dto.codBarra() == null || dto.codBarra().length() < 13) throw new IllegalArgumentException("Código de barras inválido");
-        if(dto.quantidade() == null || dto.quantidade() <= 0) throw new IllegalArgumentException("Quantidade deve ser maior que zero");
+        if(dto.nome() == null || dto.nome().isBlank()) throw new NomeProdVazioException("Nome obrigatório do produto não preenchido");
 
+        if (produtoRepository.findByNomeIgnoreCase(dto.nome()).isPresent()){
+
+            throw new NomeProdJaExistenteException("Produto já registrado com este nome");
+        }
+
+        if(dto.codBarra() == null || dto.codBarra().length() < 13) throw new CodBarraVazioException("Código de barras inválido");
+
+        if (produtoRepository.findByCodBarraIgnoreCase(dto.codBarra()).isPresent()) {
+
+            throw new CodBarraExistenteException("Código de barras já registrado");
+        }
+
+        if(dto.quantidade() == null || dto.quantidade() <= 0) throw new QuantidadeMenorZeroException("Quantidade deve ser maior que zero");
 
         if(dto.precoCusto() == null || dto.precoVenda() == null) {
             throw new IllegalArgumentException("Preços não podem ser nulos");
@@ -158,6 +187,28 @@ public class ProdService {
         }
 
         return produtoRepository.save(produto);
+    }
+
+    @Transactional
+    public boolean deletarProd(Long id, String userName) {
+
+        Usuario usuario = userRepository.findByNomeIgnoreCase(userName).orElseThrow(() -> new UserNotFoundException("Usuario com nome: " + userName + "não encontrado"));
+        UserCargo cargo = usuario.getUserCargo();
+
+        if(cargo == null || (cargo != UserCargo.ADMINISTRADOR && cargo != UserCargo.DEV)) {
+
+            throw new UserNotPermission("Usuario sem permissão");
+        }
+
+        Produto produto = produtoRepository.findById(id).orElseThrow(() -> new ProdNotFoundException("Produto com id: " + id + " Não foi encontrado"));
+
+        produto.setProdStatus(ProdStatus.INATIVO);
+        produtoRepository.save(produto);
+
+        MovProd movProd = new MovProd(MovProdAcao.EXCLUSAO, MovProdCampo.NENHUM, produto, usuario, usuario.getNome(), cargo);
+        movProdRepository.save(movProd);
+
+        return true;
     }
 
 
