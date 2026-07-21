@@ -14,11 +14,11 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Libera CORS para todos os endpoints da aplicação
-                    .allowedOrigins("http://127.0.0.1:5500") // Permite requisições vindas do frontend rodando nessa origem
-                        .allowedOrigins("http://localhost:5173")
-                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Métodos HTTP permitidos
-                    .allowedHeaders("*") // Permite todos os cabeçalhos
-                    .allowCredentials(true); // Permite envio de cookies/credenciais junto com a requisição
+                        // 1. Coloquei as duas origens juntas na mesma linha:
+                        .allowedOrigins("http://127.0.0.1:5500", "http://localhost:5173", "http://localhost:4200")
+                        .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+                        .allowedHeaders("*") // Permite todos os cabeçalhos
+                        .allowCredentials(true); // Permite envio de cookies/credenciais
             }
         };
     }

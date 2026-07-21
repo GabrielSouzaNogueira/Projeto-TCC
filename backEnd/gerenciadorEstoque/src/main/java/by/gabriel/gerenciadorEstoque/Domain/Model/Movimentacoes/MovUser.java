@@ -30,16 +30,19 @@ public class MovUser {
     @JoinColumn(name = "user_id")
     private Usuario usuario;
 
-    private String nomeUser;
+    private String novoUser;
+
+    private String responsavel;
 
     public MovUser() {}
 
-    public MovUser(MovUserAcao acaoMov, MovUserCampo campoAfetado, Usuario usuario, UserCargo userCargo, String nomeUser) {
+    public MovUser(MovUserAcao acaoMov, MovUserCampo campoAfetado, Usuario usuario, UserCargo userCargo, String novoUser,String responsavel) {
         this.acaoMov = acaoMov;
         this.campoAfetado = campoAfetado;
         this.usuario = usuario;
         this.userCargo = userCargo;
-        this.nomeUser = nomeUser;
+        this.novoUser = novoUser;
+        this.responsavel = responsavel;
 
     }
 
@@ -89,11 +92,11 @@ public class MovUser {
     }
 
     public String getNomeUser() {
-        return nomeUser;
+        return novoUser;
     }
 
     public void setNomeUser(String nomeUser) {
-        this.nomeUser = nomeUser;
+        this.novoUser = novoUser;
     }
 
     

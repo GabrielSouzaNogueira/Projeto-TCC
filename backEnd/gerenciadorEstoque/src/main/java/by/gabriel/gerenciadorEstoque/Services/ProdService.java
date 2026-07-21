@@ -53,7 +53,11 @@ public class ProdService {
     public Produto cadastrarProduto(ProdutoDTO dto, String username) {
 
         Usuario usuario = userRepository.findByNomeIgnoreCase(username)
-                .orElseThrow(() -> new RuntimeException("Usuario " + username + " não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Usuario: " + username + " não encontrado"));
+
+        if (usuario.getUserCargo() == null || usuario.getUserCargo() != UserCargo.ADMINISTRADOR && usuario.getUserCargo() != UserCargo.DEV) {
+            throw new UserNotPermission("Usuario sem permissão para realizar esta ação!");
+        }
 
 
         if(dto.nome() == null || dto.nome().isBlank()) throw new NomeProdVazioException("Nome obrigatório do produto não preenchido");

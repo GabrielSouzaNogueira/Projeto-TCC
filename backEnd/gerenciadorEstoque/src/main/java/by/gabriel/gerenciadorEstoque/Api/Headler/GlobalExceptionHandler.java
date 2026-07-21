@@ -16,6 +16,9 @@ public class GlobalExceptionHandler {
     //EXCEÇÃO GENERICA GLOBAL
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseDTO> handleGeneric(Exception ex) {
+
+        System.out.println(ex);
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(new ResponseDTO(false, "Erro inesperado", "INTERNAL_ERROR", Instant.now().toString()));
     }

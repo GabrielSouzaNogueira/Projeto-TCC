@@ -45,54 +45,61 @@ public class UserService {
 
     }
 
-
-
     public boolean logarUsuario(UserDTO dto) {
 
-        // Validações obrigatórias
+
         if (dto.nome() == null || dto.nome().isBlank()) {
             throw new UserNameNotNullException("Nome é obrigatório");
         }
 
-        // Validações obrigatórias
+
         if (dto.senha() == null || dto.senha().isBlank()) {
             throw new UserPasswordNotNullException("Senha é obrigatoria");
         }
 
-        // 1. Busca no banco se o nome existe
-        Usuario usuario = userRepository.findByNomeIgnoreCase(dto.nome())
-        .orElseThrow(() -> new UserNotFoundException("Usuario não encontrado"));
 
-        // 2. Verifica se o status do usuário é INATIVO
+        Usuario usuario = userRepository.findByNomeIgnoreCase(dto.nome())
+        .orElseThrow(() -> new UserNotFoundException("Usuario ou senha invalidos"));
+
+
         if (usuario.getUserStatus() == UserStatus.INATIVO) {
             throw new UserInactiveException("Usuario está com status inativo. Login bloqueado");
         }
 
-        // 3. Valida a senha digitada comparando com o hash armazenado no banco
+
         if (!usuario.validarSenha(dto.senha())) {
-            throw new InvalidPasswordException("Senha incorreta");
+            throw new InvalidPasswordException("Usuario ou senha invalidos");
         }
 
-        // 4. Se passou por todas as verificações, retorna true (login válido)
+
+        System.out.println("Usuario Logado com sucesso!!");
+
         return true;
     }
 
-
-    //Metodo para cadastrar Usuario
     @Transactional
-    public Usuario cadastroUser(UserDTO dto) {
+    public Usuario cadastroUser(UserDTO dto, String usuarioLogado) {
 
-        // Se email foi informado, valida duplicidade
-        if (dto.email() != null && !dto.email().isBlank() && userRepository.findByEmailIgnoreCase(dto.email()).isPresent()) {
-            throw new EmailAlreadyExistException("Já existe um usuário com este email");
+
+        Usuario userLogado = userRepository.findByNomeIgnoreCase(usuarioLogado).orElseThrow(() ->
+                new UserNotFoundException("Usuuario: " + usuarioLogado + " não foi encontrado"));
+
+        UserCargo cargo = userLogado.getUserCargo();
+        if (cargo == null || (cargo != UserCargo.ADMINISTRADOR && cargo != UserCargo.DEV)) {
+            throw  new UserNotPermission("Usuario sem permissão");
         }
 
-        // Verifica se o nome já existe
+
         if (userRepository.findByNomeIgnoreCase(dto.nome()).isPresent()) {
             throw new UserAlreadyExistsException("Usuario já existe");
         }
 
-        // Validações obrigatórias
+
+        if (dto.email() != null && !dto.email().isBlank() && userRepository.findByEmailIgnoreCase(dto.email()).isPresent()) {
+            throw new EmailAlreadyExistException("Já existe um usuário com este email");
+        }
+
+
         if (dto.nome() == null || dto.nome().isBlank()) {
             throw new UserNameNotNullException("Nome é obrigatorio");
 
@@ -102,8 +109,8 @@ public class UserService {
             throw new UserPasswordNotNullException("Senha é obrigatoria");
         }
 
-        // Cria o usuário
-        Usuario usuario = new Usuario(
+
+        Usuario novoUsuario = new Usuario(
             dto.nome(),
             dto.senha(),
             dto.email(), //Usa o email tratado com null
@@ -112,86 +119,91 @@ public class UserService {
             UserStatus.ATIVO
         );
 
-        // Salva e captura o retorno (já com UUID gerenciado)
-        Usuario usuarioSalvo = userRepository.save(usuario);
 
-        // Cria a movimentação de criação
+        Usuario usuarioSalvo = userRepository.save(novoUsuario);
+        System.out.println("USUARIO CADASTRADO COM SUCESSO");
+
+
         MovUser movUser = new MovUser(
             MovUserAcao.CRIACAO,
-            MovUserCampo.NENHUM, // nenhum campo específico afetado
-            usuarioSalvo, //Persistindo o usuario criado acima
-            usuario.getUserCargo(), //Puxando o cargo colocado no cadastro
-            usuarioSalvo.getNome() //Puxando o nome do Usuario que realizou o cadastro
+            MovUserCampo.NENHUM,
+                userLogado,
+                userLogado.getUserCargo(),
+                novoUsuario.getNome(),
+                userLogado.getNome() //Responsavel pelo cadastro
         );
 
-        // Salva a movimentação
-        movUserRepository.save(movUser);
 
-        //Retorno o Usuario criado no final
+        movUserRepository.save(movUser);
+        System.out.println("MOVIMENTAÇÃO CADASTRADA COM SUCESSO");
+
+
         return usuarioSalvo;
     }
 
-    //METODO PARA ATUALIZAR DADOS 
-    @Transactional // Anotation de segurança onde ele é "commitado" ou "estornado" ao tentar salvar no banco
-    public Boolean atualizarDados(UUID id, UpdateUserDTO dto) {
+    @Transactional
+    public Boolean atualizarDados(UUID id, UpdateUserDTO dto, String usuarioLogado) {
 
         MovUser movUser;
 
-        //Verificando se o usuario selecionado existe cadastrado 
-        Usuario usuario = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Usuario não encontrado"));
+        Usuario userLogado = userRepository.findByNomeIgnoreCase(usuarioLogado).orElseThrow(() ->
+                new UserNotFoundException("Usuuario: " + usuarioLogado + " não foi encontrado"));
 
-        //Verificando se o Usuario tem o cargo necessario
-        UserCargo cargo = usuario.getUserCargo();
+
+        Usuario usuarioAlterado = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Usuario não encontrado"));
+
+        //Verificando se o Usuario que está logado tem o cargo necessario
+        UserCargo cargo = userLogado.getUserCargo();
         if(cargo == null || (cargo != UserCargo.ADMINISTRADOR && cargo != UserCargo.DEV)) {
             throw new UserNotPermission("Usuario sem permissão");
         }
 
         if(dto.nome() != null && !dto.nome().isBlank()){
-            usuario.setNome(dto.nome().toLowerCase());
+            usuarioAlterado.setNome(dto.nome().toLowerCase());
 
-            movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.NOME, usuario, usuario.getUserCargo(), usuario.getNome());
+            movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.NOME, userLogado, userLogado.getUserCargo(), usuarioAlterado.getNome(), usuarioLogado);
             movUserRepository.save(movUser);
 
         }
 
         if(dto.senha()!= null && !dto.senha().isBlank()){
-            usuario.setSenhaCriptografada(dto.senha());
+            usuarioAlterado.setSenhaCriptografada(dto.senha());
 
-            movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.SENHA, usuario, usuario.getUserCargo(), usuario.getNome());
+            movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.SENHA, userLogado, userLogado.getUserCargo(), usuarioAlterado.getNome(), usuarioLogado);
             movUserRepository.save(movUser);
 
         }
 
         if(dto.email() != null && !dto.email().isBlank()) {
-            usuario.setEmail(dto.email().toLowerCase());
+            usuarioAlterado.setEmail(dto.email().toLowerCase());
 
-            movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.EMAIL, usuario, usuario.getUserCargo(), usuario.getNome());
+            movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.EMAIL, userLogado, userLogado.getUserCargo(), usuarioAlterado.getNome(), usuarioLogado);
             movUserRepository.save(movUser);
         }
 
         if (dto.telefone() != null && !dto.telefone().isBlank()) {
-            usuario.setTelefone(dto.telefone());
+            usuarioAlterado.setTelefone(dto.telefone());
 
-            movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.TELEFONE, usuario, usuario.getUserCargo(), usuario.getNome());
+            movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.TELEFONE, userLogado, userLogado.getUserCargo(), usuarioAlterado.getNome(), usuarioLogado);
             movUserRepository.save(movUser);
         }
         
         if(dto.userCargo() != null) {
-            usuario.setUserCargo(dto.userCargo());
+            usuarioAlterado.setUserCargo(dto.userCargo());
 
-            movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.CARGO, usuario, usuario.getUserCargo(), usuario.getNome());
+            movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.CARGO, userLogado, userLogado.getUserCargo(), usuarioAlterado.getNome(), usuarioLogado);
             movUserRepository.save(movUser);
         }
 
-        userRepository.save(usuario);
+        userRepository.save(usuarioAlterado);
         
-        return true;// 4. Se passou por todas as verificações, retorna true (atualização feita com sucesso)
+        return true;
 
     }
 
     //METODO PARA DELETAR USUARIOS
     @Transactional
-    public Boolean deletarUsuario(UUID id) {
+    public Boolean deletarUsuario(UUID id, String usuarioLogado) {
 
         Usuario usuario = userRepository.findById(id).orElseThrow(() -> new UserNotPermission("Usuario não encontrado"));
 
@@ -203,7 +215,7 @@ public class UserService {
         usuario.setUserStatus(UserStatus.INATIVO);
         userRepository.save(usuario);
 
-        MovUser movUser = new MovUser(MovUserAcao.EXCLUSAO,MovUserCampo.NENHUM, usuario, cargo, usuario.getNome());
+        MovUser movUser = new MovUser(MovUserAcao.EXCLUSAO,MovUserCampo.NENHUM, usuario, cargo, usuario.getNome(), usuarioLogado);
         movUserRepository.save(movUser);
         
         return true;

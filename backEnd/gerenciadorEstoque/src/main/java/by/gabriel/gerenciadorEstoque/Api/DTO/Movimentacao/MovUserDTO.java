@@ -16,5 +16,6 @@ public record MovUserDTO(
         MovUserAcao acaoMov,    // Alterado de String para o Enum real
         MovUserCampo campoAfetado, // Alterado de String para o Enum real
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-        LocalDateTime dataMov
+        LocalDateTime dataMov,
+        String responsavel
 ) {}

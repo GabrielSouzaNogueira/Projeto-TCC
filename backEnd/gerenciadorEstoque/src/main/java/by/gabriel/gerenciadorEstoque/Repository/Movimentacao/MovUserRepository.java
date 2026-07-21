@@ -14,11 +14,12 @@ public interface MovUserRepository extends JpaRepository<MovUser, Long> {
         SELECT new by.gabriel.gerenciadorEstoque.Api.DTO.Movimentacao.MovUserDTO(
             m.movId,
             m.usuario.userId,
-            m.nomeUser,
+            m.novoUser,
             m.userCargo,
             m.acaoMov,
             m.campoAfetado,
-            m.dataMov
+            m.dataMov,
+            m.responsavel
         )
         FROM MovUser m
         """)

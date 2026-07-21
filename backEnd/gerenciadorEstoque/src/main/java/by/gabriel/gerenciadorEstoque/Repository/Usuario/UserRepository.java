@@ -17,11 +17,9 @@ import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserStatus;
 @Repository
 public interface UserRepository extends JpaRepository<Usuario, UUID>{
 
-    // Busca usuários pelo status (ATIVO ou INATIVO)
-    Optional<Usuario> findByUserStatus(UserStatus userStatus);
-
     // Busca usuário pelo nome (para login)
     Optional<Usuario> findByNomeIgnoreCase(String nome);
+
 
     Optional<Usuario> findByEmailIgnoreCase(String email);
 

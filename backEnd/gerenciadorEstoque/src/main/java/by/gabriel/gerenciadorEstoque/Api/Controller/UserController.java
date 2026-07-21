@@ -40,10 +40,10 @@ public class UserController {
 
     // Endpoint de cadastro
     @PostMapping("/cadastro")
-    public ResponseEntity<ResponseDTO> cadastrar(@RequestBody UserDTO dto) {
+    public ResponseEntity<ResponseDTO> cadastrar(@RequestBody UserDTO dto,  @RequestHeader("X-Usuario-Logado") String usuarioLogado) {
 
         // Chama o service para realizar o cadastro do usuário
-        Usuario usuario = userService.cadastroUser(dto);
+        Usuario usuario = userService.cadastroUser(dto, usuarioLogado);
 
         //Caso tenha conseguido realizar o login normalmente eu devolvo a resposta para o cliente
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO(
@@ -71,9 +71,9 @@ public class UserController {
 
     //END POINT PARA ATUALIAR UM DADO
     @PatchMapping("/update/{id}") //Pahtch utilizado para atualização parcial dos dados
-    public ResponseEntity<ResponseDTO> update(@PathVariable UUID id, @Validated @RequestBody UpdateUserDTO dto) {
+    public ResponseEntity<ResponseDTO> update(@PathVariable UUID id, @Validated @RequestBody UpdateUserDTO dto, @RequestHeader("X-Usuario-Logado") String usuarioLogado) {
 
-        boolean atualizado = userService.atualizarDados(id, dto);
+        boolean atualizado = userService.atualizarDados(id, dto, usuarioLogado);
 
         if (atualizado) {
             return ResponseEntity.ok(
@@ -89,9 +89,9 @@ public class UserController {
 
     //END POINT PARA DELETAR O USUARIO
     @PatchMapping("/delete/{id}")
-    public ResponseEntity<ResponseDTO> softDeleteUser(@PathVariable UUID id) {
+    public ResponseEntity<ResponseDTO> softDeleteUser(@PathVariable UUID id, @RequestHeader("X-Usuario-Logado") String usuarioLogado) {
 
-        boolean deleteado = userService.deletarUsuario(id);
+        boolean deleteado = userService.deletarUsuario(id, usuarioLogado);
 
         if (deleteado) {
             return ResponseEntity.ok(new ResponseDTO(true,"Usuario deletado com sucesso", Instant.now().toString()));
