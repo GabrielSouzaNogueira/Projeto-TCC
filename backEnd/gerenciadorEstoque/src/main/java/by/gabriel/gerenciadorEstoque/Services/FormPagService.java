@@ -2,6 +2,7 @@ package by.gabriel.gerenciadorEstoque.Services;
 
 import by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.Consultas.SelectFormPagStatusDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.FormPagDTO;
+import by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.UpdateFormPagDTO;
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNotFoundException;
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNotPermission;
 import by.gabriel.gerenciadorEstoque.Domain.ExceptionFormPag.FormPagAlreadyExistException;
@@ -21,8 +22,8 @@ import java.util.List;
 @Service
 public class FormPagService {
 
-    private FormPagRepository formPagRepository;
-    private UserRepository userRepository;
+    private final FormPagRepository formPagRepository;
+    private final UserRepository userRepository;
 
     public FormPagService(FormPagRepository formPagRepository, UserRepository userRepository) {
         this.formPagRepository = formPagRepository;
@@ -68,6 +69,36 @@ public class FormPagService {
 
         formPagRepository.save(formaPagto);
         return formaPagto;
+    }
+
+    @Transactional
+    public Boolean atualizar(Long id, UpdateFormPagDTO dto, String usuarioLogado) {
+
+        FormaPagto formaPagto;
+
+        Usuario userLogado = userRepository.findByNomeIgnoreCase(usuarioLogado)
+                .orElseThrow(() -> new UserNotFoundException("Usuario de nome: " + usuarioLogado + " Não foi encontrado"));
+
+        if (userLogado.getUserCargo() != null && userLogado.getUserCargo() != UserCargo.ADMINISTRADOR && userLogado.getUserCargo() != UserCargo.DEV) {
+
+            throw new UserNotPermission("Usuario não possui permissão para realizar está ação");
+        }
+
+        formaPagto = formPagRepository.findById(id)
+                .orElseThrow(() -> new FormPagNotExistException("Forma de pagamento não encontrada no sistema!"));
+
+
+        if(dto.descricao() != null && !dto.descricao().isBlank()) {
+
+            if(formPagRepository.findByDescricaoIgnoreCase(dto.descricao()).isPresent()){
+                throw new FormPagAlreadyExistException("Forma de pagamento já existente no sistema!");
+            }
+
+            formaPagto.setDescricao(dto.descricao().toUpperCase());
+            formPagRepository.save(formaPagto);
+        }
+
+        return true;
     }
 
 }
