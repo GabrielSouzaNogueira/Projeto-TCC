@@ -2,6 +2,7 @@ package by.gabriel.gerenciadorEstoque.Api.Controller;
 
 import by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.Consultas.SelectFormPagStatusDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.FormPagDTO;
+import by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.UpdateFormPagDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.Response.ResponseDTO;
 import by.gabriel.gerenciadorEstoque.Domain.Model.FormaPag.FormaPagto;
 import by.gabriel.gerenciadorEstoque.Services.FormPagService;
@@ -41,6 +42,26 @@ public class FormPagController {
                 Instant.now().toString())
         );
 
+    }
+
+    @PatchMapping("/atualizar/{id}")
+    public ResponseEntity<ResponseDTO> atualizar(@PathVariable Long id, @RequestBody UpdateFormPagDTO dto, @RequestHeader("X-Usuario-Logado") String userLogado) {
+
+        Boolean formaPagto = formPagService.atualizar(id, dto, userLogado);
+
+        if(!formaPagto) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDTO(
+                    false,
+                    "Não foi possível atualizar a forma de pagamento!",
+                    Instant.now().toString())
+            );
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO(
+                true,
+                "Forma de pagamento atualizado com sucesso!",
+                Instant.now().toString())
+        );
 
     }
 
