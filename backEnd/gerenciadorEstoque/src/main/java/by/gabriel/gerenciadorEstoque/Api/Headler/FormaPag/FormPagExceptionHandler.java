@@ -19,29 +19,23 @@ public class FormPagExceptionHandler {
     @ExceptionHandler(FormPagNotNullException.class)
     public ResponseEntity<ResponseDTO> handlerFormPagNotNull(FormPagNotNullException ex) {
 
-        System.out.println("ERRO: " + ex);
-
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ResponseDTO(false, "FORMPAG_NOT_NULL", Instant.now().toString()));
+                .body(new ResponseDTO(false, "Forma de pagamento não pode ser null ou vazia","FORMPAG_NOT_NULL", Instant.now().toString()));
 
     }
 
     @ExceptionHandler(FormPagNotExistException.class)
     public ResponseEntity<ResponseDTO> handlerFormPagNotExist(FormPagNotExistException ex) {
 
-        System.out.println("ERRO: " + ex);
-
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ResponseDTO(false, "FORMPAG_NOT_EXIST", Instant.now().toString()));
+                .body(new ResponseDTO(false, "Forma de pagamento não foi encontrada","FORMPAG_NOT_EXIST", Instant.now().toString()));
     }
 
     @ExceptionHandler(FormPagAlreadyExistException.class)
     public ResponseEntity<ResponseDTO> handlerFormPagAlreadyExist(FormPagAlreadyExistException ex) {
 
-        System.out.println("ERRO: " + ex);
-
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new ResponseDTO(false,"FORMPAG_ALREADY_EXIST", Instant.now().toString()));
+                .body(new ResponseDTO(false,"Forma de pagamento já existente no sistema","FORMPAG_ALREADY_EXIST", Instant.now().toString()));
     }
 
 
