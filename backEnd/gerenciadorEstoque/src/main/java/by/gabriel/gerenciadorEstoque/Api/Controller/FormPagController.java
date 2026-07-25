@@ -65,5 +65,26 @@ public class FormPagController {
 
     }
 
+    @PatchMapping("/delete/{id}")
+    public ResponseEntity<ResponseDTO> delecao(@PathVariable Long id, @RequestHeader("X-Usuario-Logado") String userLogado) {
+
+        Boolean deletado = formPagService.delecao(id, userLogado);
+
+        if (!deletado) {
+
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO(
+                    false,
+                    "Não foi possivel desativada a Forma de pagamento",
+                    Instant.now().toString()
+            ));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO(
+                true,
+                "Forma de pagamento desativada com sucesso!",
+                Instant.now().toString()
+        ));
+    }
+
 
 }
