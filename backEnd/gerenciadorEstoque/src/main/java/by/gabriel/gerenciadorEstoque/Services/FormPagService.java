@@ -105,4 +105,30 @@ public class FormPagService {
         return true;
     }
 
+    @Transactional
+    public Boolean delecao(Long id, String usuarioLogado) {
+
+        FormaPagto formaPagto;
+
+        if (usuarioLogado == null || usuarioLogado.isBlank()) {
+            throw new UserLogadoNotNull("Header de usuario no cabeçalho foi enviado como null ou vazio!");
+        }
+
+        Usuario userLogado = userRepository.findByNomeIgnoreCase(usuarioLogado)
+                .orElseThrow(() -> new UserNotFoundException("Usuario de nome: " + usuarioLogado + " Não foi encontrado"));
+
+        if (userLogado.getUserCargo() != null && userLogado.getUserCargo() != UserCargo.ADMINISTRADOR && userLogado.getUserCargo() != UserCargo.DEV) {
+
+            throw new UserNotPermission("Usuario não possui permissão para realizar está ação");
+        }
+
+        formaPagto = formPagRepository.findById(id).orElseThrow(() -> new FormPagNotExistException("Forma de pagamento com id: " + id +" não foi encontrado"));
+
+        formaPagto.setStatus(FormaPagStatus.DESATIVADO);
+        formPagRepository.save(formaPagto);
+
+        System.out.println("Forma de pagamento excluida com sucesso");
+        return true;
+    }
+
 }
