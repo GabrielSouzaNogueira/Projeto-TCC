@@ -22,12 +22,10 @@ public class UserController {
 
     private final UserService userService;
 
-    //INICIALIZANDO A CLASSE DO SERVICE
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    //EndPoint listar usuarios
     @GetMapping("/listAllUser")
     public ResponseEntity<List<UserSelectDTO>> listAllUser() {
 
@@ -56,6 +54,7 @@ public class UserController {
     //EndPoint de Login
     @PostMapping("/login")
     public ResponseEntity<ResponseDTO> login(@RequestBody UserDTO dto) { // RequestBody será a condição que será preenchida no corpo da requisição
+
         boolean loginValido = userService.logarUsuario(dto);
 
         if (loginValido) {
