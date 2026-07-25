@@ -76,8 +76,8 @@ public class FormPagService {
 
         FormaPagto formaPagto;
 
-        if (usuarioLogado == null) {
-            throw new UserLogadoNotNull("Header do cabeçalho não pode estar null!");
+        if (usuarioLogado == null || usuarioLogado.isBlank()) {
+            throw new UserLogadoNotNull("Header de usuario no cabeçalho foi enviado como null ou vazio!");
         }
 
         Usuario userLogado = userRepository.findByNomeIgnoreCase(usuarioLogado)
