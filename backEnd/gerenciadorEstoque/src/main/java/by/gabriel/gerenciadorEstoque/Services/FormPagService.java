@@ -3,6 +3,7 @@ package by.gabriel.gerenciadorEstoque.Services;
 import by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.Consultas.SelectFormPagStatusDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.FormPagDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.UpdateFormPagDTO;
+import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserLogadoNotNull;
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNotFoundException;
 import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNotPermission;
 import by.gabriel.gerenciadorEstoque.Domain.ExceptionFormPag.FormPagAlreadyExistException;
@@ -43,7 +44,6 @@ public class FormPagService {
 
     }
 
-
     @Transactional
     public FormaPagto cadastro(FormPagDTO dto, String usuarioLogado) {
 
@@ -75,6 +75,10 @@ public class FormPagService {
     public Boolean atualizar(Long id, UpdateFormPagDTO dto, String usuarioLogado) {
 
         FormaPagto formaPagto;
+
+        if (usuarioLogado == null) {
+            throw new UserLogadoNotNull("Header do cabeçalho não pode estar null!");
+        }
 
         Usuario userLogado = userRepository.findByNomeIgnoreCase(usuarioLogado)
                 .orElseThrow(() -> new UserNotFoundException("Usuario de nome: " + usuarioLogado + " Não foi encontrado"));
