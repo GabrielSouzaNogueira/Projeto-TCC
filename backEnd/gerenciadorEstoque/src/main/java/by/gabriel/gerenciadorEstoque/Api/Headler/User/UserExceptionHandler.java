@@ -72,5 +72,11 @@ public class UserExceptionHandler {
     public ResponseEntity<ResponseDTO> handleUserNotPermission(NoUsersFoundInList ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO(false, ex.getMessage(),"USERS_NOT_FOUND",Instant.now().toString()));
     }
+
+    @ExceptionHandler(UserLogadoNotNull.class)
+    public ResponseEntity<ResponseDTO> handleUserLogadoNotNull(UserLogadoNotNull ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO(false, ex.getMessage(),"USERLOGADO_NOT_NULL",Instant.now().toString()));
+    }
+
 }
 
