@@ -4,6 +4,7 @@ public enum UserCargo {
 
     DEV,
     ADMINISTRADOR,
-    BALCONISTA
+    BALCONISTA,
+    GERENTE
 
 }
