@@ -3,13 +3,14 @@ package by.gabriel.gerenciadorEstoque.Domain.Model.Usuario;
 import java.util.List;
 import java.util.UUID;
 
-import by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacoes.MovProd;
-import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserCargo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacoes.MovProd;
 import by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacoes.MovUser;
+import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserCargo;
+import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -72,14 +73,6 @@ public class Usuario {
 
     }
 
-
-//    public UserStatusLogin getStatuslogin() {
-//        return statuslogin;
-//    }
-//
-//    public void setStatuslogin(UserStatusLogin statuslogin) {
-//        this.statuslogin = statuslogin;
-//    }
 
     // Criptografa a senha antes de salvar
     public void setSenhaCriptografada(String senhaPura) {
