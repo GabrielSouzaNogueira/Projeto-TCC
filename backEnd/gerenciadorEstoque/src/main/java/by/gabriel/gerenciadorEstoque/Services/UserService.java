@@ -205,17 +205,19 @@ public class UserService {
     @Transactional
     public Boolean deletarUsuario(UUID id, String usuarioLogado) {
 
-        Usuario usuario = userRepository.findById(id).orElseThrow(() -> new UserNotPermission("Usuario não encontrado"));
+        Usuario userLogado = userRepository.findByNomeIgnoreCase(usuarioLogado).orElseThrow(() -> new UserNotFoundException("Usuario: " + usuarioLogado + " não encontrado"));
+        Usuario usuarioAfetado = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Usuario: " + usuarioLogado + " não encontrado"));
 
-        UserCargo cargo = usuario.getUserCargo();
-        if(cargo == null || (cargo != UserCargo.ADMINISTRADOR && cargo != UserCargo.DEV)) {
-            throw new UserNotPermission("Usuario sem permissão");
+
+        UserCargo cargoUserLogado = userLogado.getUserCargo();
+        if(cargoUserLogado == null || (cargoUserLogado != UserCargo.ADMINISTRADOR && cargoUserLogado != UserCargo.DEV)) {
+            throw new UserNotPermission("Usuario: " + usuarioLogado + " sem permissão");
         }
 
-        usuario.setUserStatus(UserStatus.INATIVO);
-        userRepository.save(usuario);
+        usuarioAfetado.setUserStatus(UserStatus.INATIVO);
+        userRepository.save(usuarioAfetado);
 
-        MovUser movUser = new MovUser(MovUserAcao.EXCLUSAO,MovUserCampo.NENHUM, usuario, cargo, usuario.getNome(), usuarioLogado);
+        MovUser movUser = new MovUser(MovUserAcao.EXCLUSAO,MovUserCampo.NENHUM, userLogado, cargoUserLogado, usuarioAfetado.getNome(), usuarioLogado);
         movUserRepository.save(movUser);
         
         return true;
