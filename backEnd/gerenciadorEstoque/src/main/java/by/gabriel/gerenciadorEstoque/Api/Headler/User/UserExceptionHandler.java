@@ -2,13 +2,23 @@ package by.gabriel.gerenciadorEstoque.Api.Headler.User;
 
 import java.time.Instant;
 
-import by.gabriel.gerenciadorEstoque.Api.DTO.Response.ResponseDTO;
-import by.gabriel.gerenciadorEstoque.Domain.Exception.User.*;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import by.gabriel.gerenciadorEstoque.Api.DTO.Response.ResponseDTO;
+import by.gabriel.gerenciadorEstoque.Domain.Exception.User.EmailAlreadyExistException;
+import by.gabriel.gerenciadorEstoque.Domain.Exception.User.InvalidPasswordException;
+import by.gabriel.gerenciadorEstoque.Domain.Exception.User.NoUsersFoundInList;
+import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserAlreadyExistsException;
+import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserInactiveException;
+import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserLogadoNotNull;
+import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNameNotNullException;
+import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNotFoundException;
+import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserNotPermission;
+import by.gabriel.gerenciadorEstoque.Domain.Exception.User.UserPasswordNotNullException;
 
 @RestControllerAdvice
 @Order(1)
@@ -72,11 +82,14 @@ public class UserExceptionHandler {
     public ResponseEntity<ResponseDTO> handleUserNotPermission(NoUsersFoundInList ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO(false, ex.getMessage(),"USERS_NOT_FOUND",Instant.now().toString()));
     }
-
+    
     @ExceptionHandler(UserLogadoNotNull.class)
-    public ResponseEntity<ResponseDTO> handleUserLogadoNotNull(UserLogadoNotNull ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO(false, ex.getMessage(),"USERLOGADO_NOT_NULL",Instant.now().toString()));
+    public ResponseEntity<ResponseDTO> UserLogadoNotNull(UserLogadoNotNull ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO(false, "Header do usuario logado não foi enviado","USERLOGADO_NOT_NULL",Instant.now().toString()));
     }
+
+
+    
 
 }
 
