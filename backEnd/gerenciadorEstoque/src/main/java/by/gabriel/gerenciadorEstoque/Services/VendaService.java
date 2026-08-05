@@ -41,14 +41,14 @@ public class VendaService {
     @Transactional
     public Venda criarVendaAberta(VendaDTO vDto, String usuarioLogado) {
 
-        Usuario usuario = userRepository.findByNomeIgnoreCase(usuarioLogado)
+        Usuario userLogado = userRepository.findByNomeIgnoreCase(usuarioLogado)
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
         Venda venda = new Venda();
-        venda.setUsuario(usuario);
+        venda.setUsuario(userLogado);
         venda.setCliente(vDto.cliente());
         venda.setDataVenda(LocalDateTime.now());
-        venda.setStatus(VendaStatus.ABERTA); // <--- Status inicial
+        venda.setStatus(VendaStatus.ABERTA);
         venda.setDesconto(vDto.desconto() != null ? vDto.desconto() : BigDecimal.ZERO);
 
         BigDecimal valorTotalCalculado = BigDecimal.ZERO;
@@ -56,6 +56,7 @@ public class VendaService {
 
         // Apenas calcula o valor e monta os itens, SEM DAR BAIXA NO ESTOQUE AINDA
         for (var itemDto : vDto.itensVenda()) {
+
             Produto produto = produtoRepository.findById(itemDto.produtoId())
                     .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
@@ -84,7 +85,7 @@ public class VendaService {
     @Transactional
     public Venda finalizarVenda(Long vendaId, List<PagVendaDTO> pagamentosDto, String usuarioLogado) {
 
-        Usuario usuario = userRepository.findByNomeIgnoreCase(usuarioLogado)
+        Usuario userLogado = userRepository.findByNomeIgnoreCase(usuarioLogado)
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
         Venda venda = vendaRepository.findById(vendaId)
