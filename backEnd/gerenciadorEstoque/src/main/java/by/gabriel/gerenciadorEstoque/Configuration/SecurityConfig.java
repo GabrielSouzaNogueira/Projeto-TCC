@@ -29,6 +29,9 @@ public class SecurityConfig {
                     .requestMatchers("/produto/**").permitAll()
 
                     .requestMatchers("/formPag/**").permitAll()
+
+                    .requestMatchers("/venda/**").permitAll()
+
                 // Qualquer outra requisição exige autenticação
                 .anyRequest().authenticated()
             );
