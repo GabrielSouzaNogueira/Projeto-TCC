@@ -53,8 +53,8 @@ public class ProdController {
 
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseDTO> updateProd(@PathVariable Long id, @RequestBody @Validated UpdateProdDTO dto, @RequestHeader("X-Usuario") String username ) {
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<ResponseDTO> updateProd(@PathVariable Long id, @RequestBody @Validated UpdateProdDTO dto, @RequestHeader("X-Usuario-Logado") String username ) {
 
         Produto produtoAtualiazdo = prodService.updateProd(id, dto, username);
 
@@ -70,7 +70,7 @@ public class ProdController {
     }
 
     @PatchMapping("/delete/{id}")
-    public ResponseEntity<ResponseDTO> deleteProd(@PathVariable Long id, @RequestHeader("X-Usuario") String username) {
+    public ResponseEntity<ResponseDTO> deleteProd(@PathVariable Long id, @RequestHeader("X-Usuario-Logado") String username) {
 
         boolean produtoDeletado = prodService.deletarProd(id, username);
 
