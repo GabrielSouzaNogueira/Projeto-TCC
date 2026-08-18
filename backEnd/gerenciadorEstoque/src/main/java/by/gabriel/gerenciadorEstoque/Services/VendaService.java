@@ -81,7 +81,6 @@ public class VendaService {
         return vendaRepository.save(venda);
     }
 
-    // PASSO 2: Finaliza a venda existente (Faz a baixa no estoque e valida pagamentos)
     @Transactional
     public Venda finalizarVenda(Long vendaId, List<PagVendaDTO> pagamentosDto, String usuarioLogado) {
 
@@ -91,14 +90,12 @@ public class VendaService {
         Venda venda = vendaRepository.findById(vendaId)
                 .orElseThrow(() -> new RuntimeException("Venda não encontrada"));
 
-        // Evita finalizar uma venda que já foi finalizada ou devolvida
         if (venda.getStatus() != VendaStatus.ABERTA) {
             throw new RuntimeException("Esta venda não está aberta para finalização.");
         }
 
-        // Agora sim, percorre os itens e dá a baixa definitiva no estoque
         for (var itemVenda : venda.getItensVenda()) {
-            
+
             Produto produto = itemVenda.getProduto();
 
             if (produto.getQuantidade() < itemVenda.getQuantidade()) {
@@ -110,13 +107,19 @@ public class VendaService {
         }
 
         // Processa as formas de pagamento
-        List<PagVenda> listaPagamentos = new ArrayList<>();
+        if (venda.getPagVenda() == null) {
+            venda.setPagVenda(new ArrayList<>());
+        } else {
+            venda.getPagVenda().clear();
+        }
+
+        List<PagVenda> listaPagamentos = venda.getPagVenda();
         BigDecimal totalPago = BigDecimal.ZERO;
 
         for (var pagDto : pagamentosDto) {
             FormaPagto formapagto = formaPagtoRepository.findById(pagDto.formaPagId())
                     .orElseThrow(() -> new RuntimeException("Forma de pagamento não encontrada"));
-            
+
             PagVenda pagVenda = new PagVenda();
             pagVenda.setVenda(venda);
             pagVenda.setFormaPagto(formapagto);
@@ -131,7 +134,6 @@ public class VendaService {
             throw new RuntimeException("O valor total pago é menor que o valor total da venda.");
         }
 
-        venda.setPagVenda(listaPagamentos);
         venda.setStatus(VendaStatus.FINALIZADA); // <--- Altera o status para finalizada de vez!
 
         return vendaRepository.save(venda);
