@@ -39,7 +39,7 @@ public class VendaController {
 
     }
 
-    @PostMapping("/finaliazr/{id}")
+    @PostMapping("/finalizar/{id}")
     public ResponseEntity<VendaResponseDTO> finalizarVenda (@PathVariable Long id, @RequestBody List<PagVendaDTO> pagDto, @RequestHeader ("X-Usuario-Logado") String usuarioLogado) {
 
         Venda vendaFinalizada = vendaService.finalizarVenda(id, pagDto, usuarioLogado);
