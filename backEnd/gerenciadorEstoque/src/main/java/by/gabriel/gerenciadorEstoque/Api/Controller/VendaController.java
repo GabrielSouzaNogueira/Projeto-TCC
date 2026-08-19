@@ -25,7 +25,7 @@ public class VendaController {
     public ResponseEntity<VendaResponseDTO> criarVendaAberta (@RequestBody VendaDTO dto,  @RequestHeader ("X-Usuario-Logado") String usuarioLogado) {
 
         Venda novaVenda = vendaService.criarVendaAberta(dto, usuarioLogado);
-        
+
         VendaResponseDTO response = new VendaResponseDTO(
                 novaVenda.getId(),
                 novaVenda.getCliente(),
