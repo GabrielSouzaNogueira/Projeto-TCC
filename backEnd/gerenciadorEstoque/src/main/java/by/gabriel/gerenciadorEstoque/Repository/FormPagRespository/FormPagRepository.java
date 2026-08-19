@@ -16,10 +16,15 @@ public interface FormPagRepository extends JpaRepository<FormaPagto, Long> {
 
     Optional<FormaPagto> findByDescricaoIgnoreCase(String descricao);
 
-    @Query("SELECT new by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.Consultas.SelectFormPagStatusDTO(" +
-            "fp.id, fp.descricao, fp.status) " +
-            "FROM FormaPagto fp " +
-            "WHERE fp.status = :status " +
-            "ORDER BY fp.descricao ASC")
+    @Query("""
+           SELECT new by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.Consultas.SelectFormPagStatusDTO(
+               fp.id, 
+               fp.descricao, 
+               fp.status
+           )
+           FROM FormaPagto fp
+           WHERE fp.status = :status
+           ORDER BY fp.descricao ASC
+           """)
     List<SelectFormPagStatusDTO> findByStatusCustom(@Param("status") FormaPagStatus status);
 }
