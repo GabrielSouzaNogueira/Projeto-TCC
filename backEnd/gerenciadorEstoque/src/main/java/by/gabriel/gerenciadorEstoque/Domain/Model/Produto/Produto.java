@@ -19,6 +19,8 @@ public class Produto {
 
     private String nome;
 
+    private String marca;
+
     private String codBarra;
 
     private Integer quantidade;
@@ -37,8 +39,9 @@ public class Produto {
 
     }
 
-    public Produto(String nome, String codBarra, Integer quantidade, BigDecimal precoCusto, BigDecimal precoVenda, ProdStatus prodStatus) {
+    public Produto(String nome, String marca, String codBarra, Integer quantidade, BigDecimal precoCusto, BigDecimal precoVenda, ProdStatus prodStatus) {
         this.nome = nome;
+        this.marca = marca;
         this.codBarra = codBarra;
         this.quantidade = quantidade;
         this.precoCusto = precoCusto;
@@ -65,6 +68,22 @@ public class Produto {
             throw new CostOrSellBellowZeroException("Preço de custo ou venda menor ou igual a zero");
 
         }
+    }
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
+
+    public List<MovProd> getMovProd() {
+        return movProd;
+    }
+
+    public void setMovProd(List<MovProd> movProd) {
+        this.movProd = movProd;
     }
 
     public Long getProdId() {
