@@ -7,6 +7,7 @@ public record SelectAllProdDTO(
 
         Long prodId,
         String nome,
+        String marca,
         String codBarra,
         Integer quantidade,
         BigDecimal precoCusto,

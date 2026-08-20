@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 public record UpdateProdDTO(
 
     String nome,
+    String marca,
     String codBarra,
     Integer quantidade,
     BigDecimal precoCusto,
