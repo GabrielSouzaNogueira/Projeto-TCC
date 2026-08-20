@@ -118,92 +118,74 @@ public class ProdService {
         Usuario usuario = userRepository.findByNomeIgnoreCase(userName)
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
-
         if (!(usuario.getUserCargo().toString().equals("ADMINISTRADOR") || usuario.getUserCargo().toString().equals("DEV"))) {
             throw new AccessDeniedException("Apenas Usuários Administradores podem realizar esta ação");
         }
 
-
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new ProdNotFoundException("Id " + id + " é inválido, produto não encontrado"));
 
-
         // NOME
-        if (dto.nome() != null) {
-
+        if (dto.nome() != null && !dto.nome().equalsIgnoreCase(produto.getNome())) {
             if (dto.nome().isBlank()) {
                 throw new NomeProdVazioException("Nome do produto não pode ser vazio");
             }
-
             produto.setNome(dto.nome().toLowerCase());
 
-            movProd = new MovProd(MovProdAcao.ATUALIZACAO, MovProdCampo.NOME, produto, usuario, usuario.getNome(), usuario.getUserCargo());
-            movProdRepository.save(movProd);
+            movProdRepository.save(new MovProd(MovProdAcao.ATUALIZACAO, MovProdCampo.NOME, produto, usuario, usuario.getNome(), usuario.getUserCargo()));
         }
 
         // MARCA
-        if (dto.marca() != null) {
-
+        if (dto.marca() != null && !dto.marca().equalsIgnoreCase(produto.getMarca())) {
             if (dto.marca().isBlank()) {
                 throw new MarcaNotNullException("Marca não pode estar vazia");
             }
-
             produto.setMarca(dto.marca().toLowerCase());
 
-            movProd = new MovProd(MovProdAcao.ATUALIZACAO, MovProdCampo.MARCA, produto, usuario, usuario.getNome(), usuario.getUserCargo());
-            movProdRepository.save(movProd);
+            movProdRepository.save(new MovProd(MovProdAcao.ATUALIZACAO, MovProdCampo.MARCA, produto, usuario, usuario.getNome(), usuario.getUserCargo()));
         }
 
-
         // CÓDIGO DE BARRAS
-        if (dto.codBarra() != null) {
-
+        if (dto.codBarra() != null && !dto.codBarra().equalsIgnoreCase(produto.getCodBarra())) {
             if (dto.codBarra().isBlank()) {
                 throw new CodBarraVazioException("Codigo de barras não pode estar vazio");
             }
-
             if (dto.codBarra().length() < 13) {
                 throw new CodBarraMenorException("Código de barras deve conter ao menos 13 dígitos");
             }
             produto.setCodBarra(dto.codBarra());
 
-            movProd = new MovProd(MovProdAcao.ATUALIZACAO, MovProdCampo.CODBARRA, produto, usuario, usuario.getNome(), usuario.getUserCargo());
-            movProdRepository.save(movProd);
+            movProdRepository.save(new MovProd(MovProdAcao.ATUALIZACAO, MovProdCampo.CODBARRA, produto, usuario, usuario.getNome(), usuario.getUserCargo()));
         }
 
         // QUANTIDADE
-        if (dto.quantidade() != null) {
+        if (dto.quantidade() != null && !dto.quantidade().equals(produto.getQuantidade())) {
             if (dto.quantidade() <= 0) {
                 throw new QuantidadeMenorZeroException("Quantidade não pode ser menor ou igual a zero");
             }
             produto.setQuantidade(dto.quantidade());
 
-            movProd = new MovProd(MovProdAcao.ATUALIZACAO, MovProdCampo.QUANTIDADE, produto, usuario, usuario.getNome(), usuario.getUserCargo());
-            movProdRepository.save(movProd);
+            movProdRepository.save(new MovProd(MovProdAcao.ATUALIZACAO, MovProdCampo.QUANTIDADE, produto, usuario, usuario.getNome(), usuario.getUserCargo()));
         }
 
         // PREÇO DE CUSTO
-        if (dto.precoCusto() != null) {
-
+        if (dto.precoCusto() != null && dto.precoCusto().compareTo(produto.getPrecoCusto()) != 0) {
             if (dto.precoCusto().compareTo(BigDecimal.ZERO) <= 0 || dto.precoCusto().compareTo(produto.getPrecoVenda()) > 0) {
                 throw new CostOrSellBellowZeroException("Preço de Custo inválido: deve ser maior que zero e menor que a venda");
             }
             produto.setPrecoCusto(dto.precoCusto());
 
-            movProd = new MovProd(MovProdAcao.ATUALIZACAO, MovProdCampo.PRECOCUSTO, produto, usuario, usuario.getNome(), usuario.getUserCargo());
-            movProdRepository.save(movProd);
+            movProdRepository.save(new MovProd(MovProdAcao.ATUALIZACAO, MovProdCampo.PRECOCUSTO, produto, usuario, usuario.getNome(), usuario.getUserCargo()));
         }
 
         // PREÇO DE VENDA
-        if (dto.precoVenda() != null) {
-
+        if (dto.precoVenda() != null && dto.precoVenda().compareTo(produto.getPrecoVenda()) != 0) {
             if (dto.precoVenda().compareTo(BigDecimal.ZERO) <= 0 || dto.precoVenda().compareTo(produto.getPrecoCusto()) < 0) {
                 throw new CostOrSellBellowZeroException("Preço de Venda inválido: deve ser maior que zero e maior que o custo");
             }
             produto.setPrecoVenda(dto.precoVenda());
 
-            movProd = new MovProd(MovProdAcao.ATUALIZACAO, MovProdCampo.PRECOVENDA, produto, usuario, usuario.getNome(), usuario.getUserCargo());
-            movProdRepository.save(movProd);
+            movProdRepository.save(new MovProd(MovProdAcao.ATUALIZACAO, MovProdCampo.PRECOVENDA, produto, usuario, usuario.getNome(), usuario.getUserCargo()));
         }
 
         return produtoRepository.save(produto);
