@@ -86,5 +86,17 @@ public class ProdExceptionHandler {
                 .body(new ResponseDTO(false, "Código de barras já registrado.", "COD_BARRA_EXISTENTE", Instant.now().toString()));
     }
 
-    //
+    @ExceptionHandler(MarcaNotExistException.class)
+    public ResponseEntity<ResponseDTO> handlerMarcaNotExistException(MarcaNotExistException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ResponseDTO(false, "Marca do produto não existe no sistema", "MARCA_NOT_EXIST", Instant.now().toString()));
+    }
+
+    @ExceptionHandler(MarcaNotNullException.class)
+    public ResponseEntity<ResponseDTO> handlerMarcaNotNullException(MarcaNotNullException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ResponseDTO(false, "Marca do produto não pode estar vazia", "MARCA_NOT_NULL", Instant.now().toString()));
+    }
+
+    //MarcaNotNullException
 }
