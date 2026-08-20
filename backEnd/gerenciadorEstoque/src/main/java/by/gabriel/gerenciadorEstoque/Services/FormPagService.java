@@ -72,7 +72,7 @@ public class FormPagService {
     }
 
     @Transactional
-    public Boolean atualizar(Long id, UpdateFormPagDTO dto, String usuarioLogado) {
+    public Boolean atualizar(String descricao, UpdateFormPagDTO dto, String usuarioLogado) {
 
         FormaPagto formaPagto;
 
@@ -88,8 +88,7 @@ public class FormPagService {
             throw new UserNotPermission("Usuario não possui permissão para realizar está ação");
         }
 
-        formaPagto = formPagRepository.findById(id)
-                .orElseThrow(() -> new FormPagNotExistException("Forma de pagamento não encontrada no sistema!"));
+        formaPagto = formPagRepository.findByDescricaoIgnoreCase(dto.descricao()).orElseThrow(() -> new FormPagNotExistException("Forma de pagamento não existente no sistema"));
 
 
         if(dto.descricao() != null && !dto.descricao().isBlank()) {
@@ -106,7 +105,7 @@ public class FormPagService {
     }
 
     @Transactional
-    public Boolean delecao(Long id, String usuarioLogado) {
+    public Boolean delecao(String descricao, String usuarioLogado) {
 
         FormaPagto formaPagto;
 
@@ -122,7 +121,7 @@ public class FormPagService {
             throw new UserNotPermission("Usuario não possui permissão para realizar está ação");
         }
 
-        formaPagto = formPagRepository.findById(id).orElseThrow(() -> new FormPagNotExistException("Forma de pagamento com id: " + id +" não foi encontrado"));
+        formaPagto = formPagRepository.findByDescricaoIgnoreCase(descricao).orElseThrow(() -> new FormPagNotExistException("Forma de pagamento com o nome: " + descricao +" não foi encontrado"));
 
         formaPagto.setStatus(FormaPagStatus.DESATIVADO);
         formPagRepository.save(formaPagto);
