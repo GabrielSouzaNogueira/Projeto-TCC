@@ -147,48 +147,51 @@ public class UserService {
         MovUser movUser;
 
         Usuario userLogado = userRepository.findByNomeIgnoreCase(usuarioLogado).orElseThrow(() ->
-                new UserNotFoundException("Usuuario: " + usuarioLogado + " não foi encontrado"));
-
+                new UserNotFoundException("Usuario: " + usuarioLogado + " não foi encontrado"));
 
         Usuario usuarioAlterado = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Usuario não encontrado"));
 
-        //Verificando se o Usuario que está logado tem o cargo necessario
+        // Verificando se o Usuario que está logado tem o cargo necessario
         UserCargo cargo = userLogado.getUserCargo();
         if(cargo == null || (cargo != UserCargo.ADMINISTRADOR && cargo != UserCargo.DEV)) {
             throw new UserNotPermission("Usuario sem permissão");
         }
 
-        if(dto.nome() != null && !dto.nome().isBlank()){
+        // NOME
+        if(dto.nome() != null && !dto.nome().isBlank() && !dto.nome().equalsIgnoreCase(usuarioAlterado.getNome())){
             usuarioAlterado.setNome(dto.nome().toLowerCase());
 
             movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.NOME, userLogado, userLogado.getUserCargo(), usuarioAlterado.getNome(), usuarioLogado);
             movUserRepository.save(movUser);
-
         }
 
-        if(dto.senha()!= null && !dto.senha().isBlank()){
+        // SENHA
+        // Nota: Assumi que o getter da sua entidade é getSenhaCriptografada(). Se for apenas getSenha(), basta alterar aqui.
+        if(dto.senha() != null && !dto.senha().isBlank() && !dto.senha().equals(usuarioAlterado.getNome())){
             usuarioAlterado.setSenhaCriptografada(dto.senha());
 
             movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.SENHA, userLogado, userLogado.getUserCargo(), usuarioAlterado.getNome(), usuarioLogado);
             movUserRepository.save(movUser);
-
         }
 
-        if(dto.email() != null && !dto.email().isBlank()) {
+        // EMAIL
+        if(dto.email() != null && !dto.email().isBlank() && !dto.email().equalsIgnoreCase(usuarioAlterado.getEmail())) {
             usuarioAlterado.setEmail(dto.email().toLowerCase());
 
             movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.EMAIL, userLogado, userLogado.getUserCargo(), usuarioAlterado.getNome(), usuarioLogado);
             movUserRepository.save(movUser);
         }
 
-        if (dto.telefone() != null && !dto.telefone().isBlank()) {
+        // TELEFONE
+        if (dto.telefone() != null && !dto.telefone().isBlank() && !dto.telefone().equals(usuarioAlterado.getTelefone())) {
             usuarioAlterado.setTelefone(dto.telefone());
 
             movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.TELEFONE, userLogado, userLogado.getUserCargo(), usuarioAlterado.getNome(), usuarioLogado);
             movUserRepository.save(movUser);
         }
-        
-        if(dto.userCargo() != null) {
+
+        // CARGO (Enums são comparados com !=)
+        if(dto.userCargo() != null && dto.userCargo() != usuarioAlterado.getUserCargo()) {
             usuarioAlterado.setUserCargo(dto.userCargo());
 
             movUser = new MovUser(MovUserAcao.ATUALIZACAO, MovUserCampo.CARGO, userLogado, userLogado.getUserCargo(), usuarioAlterado.getNome(), usuarioLogado);
@@ -196,9 +199,8 @@ public class UserService {
         }
 
         userRepository.save(usuarioAlterado);
-        
-        return true;
 
+        return true;
     }
 
     //METODO PARA DELETAR USUARIOS
