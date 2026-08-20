@@ -1,14 +1,7 @@
 package by.gabriel.gerenciadorEstoque.Domain.Model.Usuario;
 
-import java.util.List;
 import java.util.UUID;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacoes.MovProd;
-import by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacoes.MovUser;
 import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserCargo;
 import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserStatus;
 import jakarta.persistence.Column;
@@ -18,7 +11,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 
 @Entity
 public class Usuario {
@@ -45,17 +37,7 @@ public class Usuario {
     @Enumerated(EnumType.STRING) // salva o enum como texto
     private UserStatus userStatus;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "usuario")
-    private List<MovProd> movimentacaoProd;
-
-    // Relacionamento com MovUser
-    @JsonIgnore
-    @OneToMany(mappedBy = "usuario")
-    private List<MovUser> movimentacoes;
-
     public Usuario() {
-
     }
 
     // Construtor com todos os campos
@@ -63,16 +45,14 @@ public class Usuario {
         this.nome = nome;
         setSenhaCriptografada(senha); //Senha já é criptografada no momento da criação do Usuario
 
-        // // Normaliza email: se vier vazio, vira null
+        // Normaliza email: se vier vazio, vira null
         this.email = (email == null  || email.isBlank()) ? null : email;
 
-        // //condição ? valorSeVerdadeiro : valorSeFalso
+        // condição ? valorSeVerdadeiro : valorSeFalso
         this.telefone = (telefone == null || telefone.isBlank()) ? null : telefone;
         this.userCargo = userCargo;
         this.userStatus = userStatus;
-
     }
-
 
     // Criptografa a senha antes de salvar
     public void setSenhaCriptografada(String senhaPura) {
@@ -86,67 +66,18 @@ public class Usuario {
         return encoder.matches(senhaDigitada, this.senha);
     }
 
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-
-
-    public String getNome() {
-        return nome;
-    }
-
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-
-    public String getEmail() {
-        return email;
-    }
-
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public UserCargo getUserCargo() {
-        return userCargo;
-    }
-
-    public UserStatus getUserStatus() {
-        return userStatus;
-    }
-
-
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
-    }
-
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public void setUserCargo(UserCargo userCargo) {
-        this.userCargo = userCargo;
-    }
-
-
+    // ... (Getters e Setters mantidos iguais)
+    public UUID getUserId() { return userId; }
+    public void setUserId(UUID userId) { this.userId = userId; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getSenha() { return senha; }
+    public UserCargo getUserCargo() { return userCargo; }
+    public void setUserCargo(UserCargo userCargo) { this.userCargo = userCargo; }
+    public UserStatus getUserStatus() { return userStatus; }
+    public void setUserStatus(UserStatus userStatus) { this.userStatus = userStatus; }
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
 }

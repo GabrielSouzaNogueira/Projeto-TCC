@@ -3,12 +3,10 @@ package by.gabriel.gerenciadorEstoque.Domain.Model.Produto;
 import by.gabriel.gerenciadorEstoque.Domain.ExceptionProd.CostOrSellBellowZeroException;
 import by.gabriel.gerenciadorEstoque.Domain.ExceptionProd.HigherCostToSellException;
 import by.gabriel.gerenciadorEstoque.Domain.ExceptionProd.PrecosNotNullException;
-import by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacoes.MovProd;
 import by.gabriel.gerenciadorEstoque.Enum.Produto.ProdStatus;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 public class Produto {
@@ -31,9 +29,6 @@ public class Produto {
 
     @Enumerated(EnumType.STRING)
     private ProdStatus prodStatus;
-
-    @OneToMany(mappedBy = "produto")
-    private List<MovProd> movProd;
 
     public Produto() {
 
@@ -58,15 +53,11 @@ public class Produto {
         }
 
         if (precoCusto.compareTo(precoVenda) > 0 || precoVenda.compareTo(precoCusto) < 0) {
-
             throw new HigherCostToSellException("Preco de custo maior que o de Venda");
-
         }
 
         if (precoCusto.compareTo(BigDecimal.ZERO) <= 0 || precoVenda.compareTo(BigDecimal.ZERO) <= 0) {
-
             throw new CostOrSellBellowZeroException("Preço de custo ou venda menor ou igual a zero");
-
         }
     }
 
@@ -76,14 +67,6 @@ public class Produto {
 
     public void setMarca(String marca) {
         this.marca = marca;
-    }
-
-    public List<MovProd> getMovProd() {
-        return movProd;
-    }
-
-    public void setMovProd(List<MovProd> movProd) {
-        this.movProd = movProd;
     }
 
     public Long getProdId() {
