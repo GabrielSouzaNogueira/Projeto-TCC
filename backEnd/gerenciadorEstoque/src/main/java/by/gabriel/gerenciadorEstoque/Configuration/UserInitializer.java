@@ -35,7 +35,7 @@ public class UserInitializer {
                 usuarioRepository.save(adminPadrao);
 
                 System.out.println("✅ Usuário padrão criado com sucesso!");
-                System.out.println("🔑 Credenciais: Usuário [ admin ] | Senha [ 123 ]");
+                System.out.println("🔑 Credenciais: Usuário [ Gabriel ] | Senha [ 123 ]");
                 System.out.println("--------------------------------------------------");
             } else {
                 System.out.println(">> Banco de dados já possui usuários cadastrados. Inicialização padrão pulada.");
