@@ -44,10 +44,10 @@ public class FormPagController {
 
     }
 
-    @PatchMapping("/atualizar/{id}")
-    public ResponseEntity<ResponseDTO> atualizar(@PathVariable Long id, @RequestBody UpdateFormPagDTO dto, @RequestHeader("X-Usuario-Logado") String userLogado) {
+    @PatchMapping("/atualizar/{descricao}")
+    public ResponseEntity<ResponseDTO> atualizar(@PathVariable String descricao, @RequestBody UpdateFormPagDTO dto, @RequestHeader("X-Usuario-Logado") String userLogado) {
 
-        Boolean formaPagto = formPagService.atualizar(id, dto, userLogado);
+        Boolean formaPagto = formPagService.atualizar(descricao, dto, userLogado);
 
         if(!formaPagto) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDTO(
@@ -65,10 +65,10 @@ public class FormPagController {
 
     }
 
-    @PatchMapping("/delete/{id}")
-    public ResponseEntity<ResponseDTO> delecao(@PathVariable Long id, @RequestHeader("X-Usuario-Logado") String userLogado) {
+    @PatchMapping("/delete/{descricao}")
+    public ResponseEntity<ResponseDTO> delecao(@PathVariable String descricao, @RequestHeader("X-Usuario-Logado") String userLogado) {
 
-        Boolean deletado = formPagService.delecao(id, userLogado);
+        Boolean deletado = formPagService.delecao(descricao, userLogado);
 
         if (!deletado) {
 
