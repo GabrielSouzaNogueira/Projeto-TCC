@@ -24,7 +24,7 @@ public interface UserRepository extends JpaRepository<Usuario, UUID>{
     Optional<Usuario> findByEmailIgnoreCase(String email);
 
     @Query("SELECT new by.gabriel.gerenciadorEstoque.Api.DTO.Usuario.Consultas.UserSelectDTO(" +
-            "u.userId, u.nome, u.email, u.userCargo, u.userStatus) " +
+            "u.userId, u.nome, u.email, u.userCargo, u.userStatus, u.telefone) " +
             "FROM Usuario u WHERE u.userStatus = :status " +
             "ORDER BY u.nome ASC")
     List<UserSelectDTO> findByStatusCustom(@Param("status") UserStatus status);
