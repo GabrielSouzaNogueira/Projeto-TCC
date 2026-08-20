@@ -134,7 +134,7 @@ public class VendaService {
             throw new RuntimeException("O valor total pago é menor que o valor total da venda.");
         }
 
-        venda.setStatus(VendaStatus.FINALIZADA); // <--- Altera o status para finalizada de vez!
+        venda.setStatus(VendaStatus.FINALIZADA);
 
         return vendaRepository.save(venda);
     }
