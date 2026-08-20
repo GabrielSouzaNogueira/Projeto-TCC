@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MovUsuarioDTO } from '../../models/mov-usuario-dto';
+import { movimentacaoDTO } from '../../models/movimentacaoDTO'; // <-- Import atualizado
 import { AuthMovimentacao } from '../../services/auth-movimentacao';
 
 @Component({
@@ -15,13 +15,15 @@ export class Movimentacao implements OnInit {
   carregando: boolean = false;
   buscaRealizada: boolean = false;
 
-  listaMovimentacoes: MovUsuarioDTO[] = [];
-  movimentacoesExibidas: MovUsuarioDTO[] = [];
+  // Atualizado para o novo DTO unificado
+  listaMovimentacoes: movimentacaoDTO[] = [];
+  movimentacoesExibidas: movimentacaoDTO[] = [];
 
   dataInicio: string = '';       
-  dataFim: string = '';       
+  dataFim: string = ''; 
+  filtroTipo: string = '';        // <-- NOVO: Filtro para escolher PRODUTO ou USUARIO      
   filtroAcao: string = '';       
-  filtroUsuario: string = '';    
+  filtroRegistro: string = '';    // <-- RENOMEADO: Antes era filtroUsuario    
   filtroResponsavel: string = ''; 
 
   constructor(
@@ -34,8 +36,9 @@ export class Movimentacao implements OnInit {
   limparFiltro(): void {
     this.dataInicio = '';
     this.dataFim = '';
+    this.filtroTipo = '';         // <-- Adicionado para limpar
     this.filtroAcao = '';
-    this.filtroUsuario = '';
+    this.filtroRegistro = '';     // <-- Renomeado
     this.filtroResponsavel = '';
     this.buscaRealizada = false;
     this.listaMovimentacoes = [];
@@ -46,10 +49,11 @@ export class Movimentacao implements OnInit {
     this.carregando = true;
 
     const filtros: any = {};
+    if (this.filtroTipo) filtros.tipo = this.filtroTipo;                    // <-- Mapeia para o backend
     if (this.dataInicio) filtros.dataInicio = this.dataInicio;
     if (this.dataFim) filtros.dataFim = this.dataFim;
     if (this.filtroAcao) filtros.acao = this.filtroAcao;
-    if (this.filtroUsuario) filtros.usuarioAfetado = this.filtroUsuario;
+    if (this.filtroRegistro) filtros.registroAfetado = this.filtroRegistro; // <-- Mapeia para o backend
     if (this.filtroResponsavel) filtros.responsavel = this.filtroResponsavel;
 
     this.authMovimentacaoService.filtrarMovimentacoes(filtros).subscribe({

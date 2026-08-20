@@ -7,13 +7,13 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthGerenciadorProduto {
-  private apiUrl = 'http://localhost:8080/usuario'
+  private apiUrl = 'http://localhost:8080/produto'
 
   constructor(private http: HttpClient) {}
 
     // metodo para buscar a lista de usuarios para a tabela
     listarProdutos(): Observable<SelectAllProdDTO[]> {
-      return this.http.get<SelectAllProdDTO[]>(`${this.apiUrl}/listAllUser`);
+      return this.http.get<SelectAllProdDTO[]>(`${this.apiUrl}/listProd`);
     }
 
     // metodo para inatviar

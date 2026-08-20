@@ -13,5 +13,5 @@ export interface SelectAllProdDTO {
 
   precoVenda: number;
   
-  ProdStatus: string;
+  prodStatus: string;
 }

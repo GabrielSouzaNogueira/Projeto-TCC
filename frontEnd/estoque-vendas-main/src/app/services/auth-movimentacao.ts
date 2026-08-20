@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { MovUsuarioDTO } from '../models/mov-usuario-dto';
+import { movimentacaoDTO } from '../models/movimentacaoDTO'; 
 
 @Injectable({
   providedIn: 'root',
@@ -11,19 +11,20 @@ export class AuthMovimentacao {
 
   constructor(private http: HttpClient) {}
 
-  listarMovimentacoes(): Observable<MovUsuarioDTO[]> {
-    return this.http.get<MovUsuarioDTO[]>(`${this.apiUrl}/listAllMov`);
+  listarMovimentacoes(): Observable<movimentacaoDTO[]> { // <-- Alterado aqui
+    return this.http.get<movimentacaoDTO[]>(`${this.apiUrl}/listAllMov`); // <-- Alterado aqui
   }
 
-  filtrarMovimentacoes(filtros: any): Observable<MovUsuarioDTO[]> {
+  filtrarMovimentacoes(filtros: any): Observable<movimentacaoDTO[]> { // <-- Alterado aqui
     let params = new HttpParams();
 
+    if (filtros.tipo) params = params.set('tipo', filtros.tipo);
     if (filtros.dataInicio) params = params.set('dataInicio', filtros.dataInicio);
     if (filtros.dataFim) params = params.set('dataFim', filtros.dataFim);
     if (filtros.acao) params = params.set('acao', filtros.acao);
-    if (filtros.usuarioAfetado) params = params.set('usuarioAfetado', filtros.usuarioAfetado);
+    if (filtros.registroAfetado) params = params.set('registroAfetado', filtros.registroAfetado);
     if (filtros.responsavel) params = params.set('responsavel', filtros.responsavel);
 
-    return this.http.get<MovUsuarioDTO[]>(`${this.apiUrl}/filtrar`, { params });
+    return this.http.get<movimentacaoDTO[]>(`${this.apiUrl}/filtrar`, { params }); // <-- Alterado aqui
   }
 }

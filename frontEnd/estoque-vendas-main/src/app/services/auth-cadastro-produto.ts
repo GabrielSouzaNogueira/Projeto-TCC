@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthCadastroProduto {
-  private apiUrl = 'http://localhost:8080/usuario/cadastro-produto'
+  private apiUrl = 'http://localhost:8080/produto/cadastro'
 
   constructor (private http: HttpClient) {}
 
