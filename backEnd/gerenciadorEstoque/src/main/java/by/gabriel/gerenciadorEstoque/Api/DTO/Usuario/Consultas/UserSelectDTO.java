@@ -9,6 +9,7 @@ public record UserSelectDTO(
         String nome,
         String email,
         UserCargo cargo,   // Deve bater com u.userCargo na query
-        UserStatus status  // Deve bater com u.userStatus na query
+        UserStatus status,
+        String telefone// Deve bater com u.userStatus na query
 ) {
 }
