@@ -18,10 +18,21 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     Optional<Produto> findByCodBarraIgnoreCase(String codBarra);
 
-    @Query("SELECT new by.gabriel.gerenciadorEstoque.Api.DTO.Produto.Consultas.SelectAllProdDTO(" +
-            "  pd.prodId, pd.nome, pd.codBarra, pd.quantidade, pd.precoCusto, pd.precoVenda, pd.prodStatus) " +
-            "FROM Produto pd WHERE pd.prodStatus = :status " +
-            "ORDER BY pd.nome ASC")
+    @Query("""
+            SELECT new by.gabriel.gerenciadorEstoque.Api.DTO.Produto.Consultas.SelectAllProdDTO(
+                pd.prodId, 
+                pd.nome,
+                pd.marca,
+                pd.codBarra,
+                pd.quantidade,
+                pd.precoCusto,
+                pd.precoVenda,
+                pd.prodStatus
+            )
+            FROM Produto pd 
+            WHERE pd.prodStatus = :status 
+            ORDER BY pd.nome ASC
+            """)
     List<SelectAllProdDTO> findByStatusCustom(@Param("status") ProdStatus status);
 
 }
