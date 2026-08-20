@@ -59,8 +59,9 @@ public class ProdService {
             throw new UserNotPermission("Usuario sem permissão para realizar esta ação!");
         }
 
-
         if(dto.nome() == null || dto.nome().isBlank()) throw new NomeProdVazioException("Nome obrigatório do produto não preenchido");
+
+        if(dto.marca() == null || dto.marca().isBlank()) throw new MarcaNotNullException("Marca não pode estar vazia");
 
         if (produtoRepository.findByNomeIgnoreCase(dto.nome()).isPresent()){
 
@@ -83,6 +84,7 @@ public class ProdService {
 
         Produto produto = new Produto(
                 dto.nome(),
+                dto.marca(),
                 dto.codBarra(),
                 dto.quantidade(),
                 dto.precoCusto(),
@@ -138,6 +140,20 @@ public class ProdService {
             movProd = new MovProd(MovProdAcao.ATUALIZACAO, MovProdCampo.NOME, produto, usuario, usuario.getNome(), usuario.getUserCargo());
             movProdRepository.save(movProd);
         }
+
+        // MARCA
+        if (dto.marca() != null) {
+
+            if (dto.marca().isBlank()) {
+                throw new MarcaNotNullException("Marca não pode estar vazia");
+            }
+
+            produto.setMarca(dto.marca().toLowerCase());
+
+            movProd = new MovProd(MovProdAcao.ATUALIZACAO, MovProdCampo.MARCA, produto, usuario, usuario.getNome(), usuario.getUserCargo());
+            movProdRepository.save(movProd);
+        }
+
 
         // CÓDIGO DE BARRAS
         if (dto.codBarra() != null) {
