@@ -1,4 +1,4 @@
-package by.gabriel.gerenciadorEstoque.Api.Headler.Prod;
+package by.gabriel.gerenciadorEstoque.Headler.Prod;
 
 import by.gabriel.gerenciadorEstoque.Api.DTO.Response.ResponseDTO;
 import by.gabriel.gerenciadorEstoque.Domain.ExceptionProd.*;

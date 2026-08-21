@@ -1,9 +1,9 @@
-package by.gabriel.gerenciadorEstoque.Api.Headler.FormaPag;
+package by.gabriel.gerenciadorEstoque.Headler.FormaPag;
 
 import by.gabriel.gerenciadorEstoque.Api.DTO.Response.ResponseDTO;
-import by.gabriel.gerenciadorEstoque.Domain.ExceptionFormPag.FormPagAlreadyExistException;
-import by.gabriel.gerenciadorEstoque.Domain.ExceptionFormPag.FormPagNotExistException;
-import by.gabriel.gerenciadorEstoque.Domain.ExceptionFormPag.FormPagNotNullException;
+import by.gabriel.gerenciadorEstoque.Exception.adada.ExceptionFormPag.FormPagAlreadyExistException;
+import by.gabriel.gerenciadorEstoque.Exception.adada.ExceptionFormPag.FormPagNotExistException;
+import by.gabriel.gerenciadorEstoque.Exception.adada.ExceptionFormPag.FormPagNotNullException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

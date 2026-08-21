@@ -1,4 +1,4 @@
-package by.gabriel.gerenciadorEstoque.Api.Headler;
+package by.gabriel.gerenciadorEstoque.Headler;
 
 import java.time.Instant;
 
