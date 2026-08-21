@@ -1,4 +1,4 @@
-package by.gabriel.gerenciadorEstoque.Domain.Model.FormaPag;
+package by.gabriel.gerenciadorEstoque.Model.FormaPag;
 
 import by.gabriel.gerenciadorEstoque.Enum.FormaPag.FormaPagStatus;
 import jakarta.persistence.Entity;

@@ -1,8 +1,8 @@
-package by.gabriel.gerenciadorEstoque.Domain.Model.Vendas;
+package by.gabriel.gerenciadorEstoque.Model.Vendas;
 
 import java.math.BigDecimal;
 
-import by.gabriel.gerenciadorEstoque.Domain.Model.Produto.Produto;
+import by.gabriel.gerenciadorEstoque.Model.Produto.Produto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

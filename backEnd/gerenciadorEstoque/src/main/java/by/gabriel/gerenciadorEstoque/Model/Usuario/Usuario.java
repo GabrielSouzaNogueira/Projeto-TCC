@@ -1,4 +1,4 @@
-package by.gabriel.gerenciadorEstoque.Domain.Model.Usuario;
+package by.gabriel.gerenciadorEstoque.Model.Usuario;
 
 import java.util.UUID;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

@@ -1,11 +1,11 @@
-package by.gabriel.gerenciadorEstoque.Domain.Model.Vendas;
+package by.gabriel.gerenciadorEstoque.Model.Vendas;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import by.gabriel.gerenciadorEstoque.Domain.Model.Usuario.Usuario;
+import by.gabriel.gerenciadorEstoque.Model.Usuario.Usuario;
 import by.gabriel.gerenciadorEstoque.Enum.Venda.VendaStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

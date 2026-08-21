@@ -1,9 +1,8 @@
-package by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacao;
+package by.gabriel.gerenciadorEstoque.Model.Movimentacao;
 
-import by.gabriel.gerenciadorEstoque.Domain.Model.Usuario.Usuario;
+import by.gabriel.gerenciadorEstoque.Model.Usuario.Usuario;
 import by.gabriel.gerenciadorEstoque.Enum.Movimentacao.AcaoMovimentacao;
 import by.gabriel.gerenciadorEstoque.Enum.Movimentacao.TipoEntidade;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;

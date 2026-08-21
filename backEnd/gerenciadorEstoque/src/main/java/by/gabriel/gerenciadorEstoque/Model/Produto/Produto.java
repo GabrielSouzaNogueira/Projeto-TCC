@@ -1,4 +1,4 @@
-package by.gabriel.gerenciadorEstoque.Domain.Model.Produto;
+package by.gabriel.gerenciadorEstoque.Model.Produto;
 
 import by.gabriel.gerenciadorEstoque.Exception.Produto.CostOrSellBellowZeroException;
 import by.gabriel.gerenciadorEstoque.Exception.Produto.HigherCostToSellException;

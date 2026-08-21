@@ -1,4 +1,4 @@
-package by.gabriel.gerenciadorEstoque.Domain.Model.Cliente;
+package by.gabriel.gerenciadorEstoque.Model.Cliente;
 
 
 import by.gabriel.gerenciadorEstoque.Enum.Cliente.ClienteStatus;
