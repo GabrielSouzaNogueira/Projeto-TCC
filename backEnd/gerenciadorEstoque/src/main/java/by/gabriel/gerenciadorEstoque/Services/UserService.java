@@ -110,7 +110,8 @@ public class UserService {
         Movimentacao mov = new Movimentacao(
                 AcaoMovimentacao.CRIACAO,
                 TipoEntidade.USUARIO,
-                String.valueOf(novoUsuario.getUserId()),
+                novoUsuario.getUserId(),
+                null,
                 novoUsuario.getNome(),
                 "NENHUM",
                 userLogado
@@ -136,36 +137,35 @@ public class UserService {
             throw new UserNotPermission("Usuario sem permissão");
         }
 
-        String idUser = String.valueOf(usuarioAlterado.getUserId());
 
         // NOME
         if(dto.nome() != null && !dto.nome().isBlank() && !dto.nome().equalsIgnoreCase(usuarioAlterado.getNome())){
             usuarioAlterado.setNome(dto.nome().toLowerCase());
-            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.USUARIO, idUser, usuarioAlterado.getNome(), "NOME", userLogado));
+            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.USUARIO, usuarioAlterado.getUserId(), null,usuarioAlterado.getNome(), "NOME", userLogado));
         }
 
         // SENHA
         if(dto.senha() != null && !dto.senha().isBlank() && !dto.senha().equals(usuarioAlterado.getSenha())){
             usuarioAlterado.setSenhaCriptografada(dto.senha());
-            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.USUARIO, idUser, usuarioAlterado.getNome(), "SENHA", userLogado));
+            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.USUARIO, usuarioAlterado.getUserId(), null, usuarioAlterado.getNome(), "SENHA", userLogado));
         }
 
         // EMAIL
         if(dto.email() != null && !dto.email().isBlank() && !dto.email().equalsIgnoreCase(usuarioAlterado.getEmail())) {
             usuarioAlterado.setEmail(dto.email().toLowerCase());
-            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.USUARIO, idUser, usuarioAlterado.getNome(), "EMAIL", userLogado));
+            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.USUARIO, usuarioAlterado.getUserId(), null, usuarioAlterado.getNome(), "EMAIL", userLogado));
         }
 
         // TELEFONE
         if (dto.telefone() != null && !dto.telefone().isBlank() && !dto.telefone().equals(usuarioAlterado.getTelefone())) {
             usuarioAlterado.setTelefone(dto.telefone());
-            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.USUARIO, idUser, usuarioAlterado.getNome(), "TELEFONE", userLogado));
+            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.USUARIO, usuarioAlterado.getUserId(), null, usuarioAlterado.getNome(), "TELEFONE", userLogado));
         }
 
         // CARGO (Enums são comparados com !=)
         if(dto.userCargo() != null && dto.userCargo() != usuarioAlterado.getUserCargo()) {
             usuarioAlterado.setUserCargo(dto.userCargo());
-            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.USUARIO, idUser, usuarioAlterado.getNome(), "CARGO", userLogado));
+            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.USUARIO, usuarioAlterado.getUserId(), null, usuarioAlterado.getNome(), "CARGO", userLogado));
         }
 
         userRepository.save(usuarioAlterado);
@@ -188,7 +188,7 @@ public class UserService {
         usuarioAfetado.setUserStatus(UserStatus.INATIVO);
         userRepository.save(usuarioAfetado);
 
-        movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.EXCLUSAO, TipoEntidade.USUARIO, String.valueOf(usuarioAfetado.getUserId()), usuarioAfetado.getNome(), "NENHUM", userLogado));
+        movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.EXCLUSAO, TipoEntidade.USUARIO, usuarioAfetado.getUserId(), null, usuarioAfetado.getNome(), "NENHUM", userLogado));
 
         return true;
     }

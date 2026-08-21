@@ -79,7 +79,7 @@ public class ProdService {
         produto = produtoRepository.save(produto);
 
         // Movimentação Genérica COM O NOME DO PRODUTO AGORA!
-        movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.CRIACAO, TipoEntidade.PRODUTO, String.valueOf(produto.getProdId()), produto.getNome(), "NENHUM", usuario));
+        movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.CRIACAO, TipoEntidade.PRODUTO, null, produto.getProdId(), produto.getNome(), "NENHUM", usuario));
 
         return produto;
     }
@@ -102,26 +102,26 @@ public class ProdService {
         if (dto.nome() != null && !dto.nome().equalsIgnoreCase(produto.getNome())) {
             if (dto.nome().isBlank()) throw new NomeProdVazioException("Nome do produto não pode ser vazio");
             produto.setNome(dto.nome().toLowerCase());
-            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.PRODUTO, idProd, produto.getNome(), "NOME", usuario));
+            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.PRODUTO, null, produto.getProdId(), produto.getNome(), "NOME", usuario));
         }
 
         if (dto.marca() != null && !dto.marca().equalsIgnoreCase(produto.getMarca())) {
             if (dto.marca().isBlank()) throw new MarcaNotNullException("Marca não pode estar vazia");
             produto.setMarca(dto.marca().toLowerCase());
-            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.PRODUTO, idProd, produto.getNome(), "MARCA", usuario));
+            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.PRODUTO, null, produto.getProdId(), produto.getNome(), "MARCA", usuario));
         }
 
         if (dto.codBarra() != null && !dto.codBarra().equalsIgnoreCase(produto.getCodBarra())) {
             if (dto.codBarra().isBlank()) throw new CodBarraVazioException("Codigo de barras não pode estar vazio");
             if (dto.codBarra().length() < 13) throw new CodBarraMenorException("Código de barras deve conter ao menos 13 dígitos");
             produto.setCodBarra(dto.codBarra());
-            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.PRODUTO, idProd, produto.getNome(), "CODBARRA", usuario));
+            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.PRODUTO, null, produto.getProdId(), produto.getNome(), "CODBARRA", usuario));
         }
 
         if (dto.quantidade() != null && !dto.quantidade().equals(produto.getQuantidade())) {
             if (dto.quantidade() <= 0) throw new QuantidadeMenorZeroException("Quantidade não pode ser menor ou igual a zero");
             produto.setQuantidade(dto.quantidade());
-            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.PRODUTO, idProd, produto.getNome(), "QUANTIDADE", usuario));
+            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.PRODUTO, null, produto.getProdId(), produto.getNome(), "QUANTIDADE", usuario));
         }
 
         if (dto.precoCusto() != null && dto.precoCusto().compareTo(produto.getPrecoCusto()) != 0) {
@@ -129,7 +129,7 @@ public class ProdService {
                 throw new CostOrSellBellowZeroException("Preço de Custo inválido");
             }
             produto.setPrecoCusto(dto.precoCusto());
-            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.PRODUTO, idProd, produto.getNome(), "PRECOCUSTO", usuario));
+            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.PRODUTO, null, produto.getProdId(), produto.getNome(), "PRECOCUSTO", usuario));
         }
 
         if (dto.precoVenda() != null && dto.precoVenda().compareTo(produto.getPrecoVenda()) != 0) {
@@ -137,7 +137,7 @@ public class ProdService {
                 throw new CostOrSellBellowZeroException("Preço de Venda inválido");
             }
             produto.setPrecoVenda(dto.precoVenda());
-            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.PRODUTO, idProd, produto.getNome(), "PRECOVENDA", usuario));
+            movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.ATUALIZACAO, TipoEntidade.PRODUTO, null, produto.getProdId(), produto.getNome(), "PRECOVENDA", usuario));
         }
 
         return produtoRepository.save(produto);
@@ -157,7 +157,7 @@ public class ProdService {
         produto.setProdStatus(ProdStatus.INATIVO);
         produtoRepository.save(produto);
 
-        movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.EXCLUSAO, TipoEntidade.PRODUTO, String.valueOf(produto.getProdId()), produto.getNome(), "NENHUM", usuario));
+        movimentacaoRepository.save(new Movimentacao(AcaoMovimentacao.EXCLUSAO, TipoEntidade.PRODUTO, null, produto.getProdId(), produto.getNome(), "NENHUM", usuario));
 
         return true;
     }
