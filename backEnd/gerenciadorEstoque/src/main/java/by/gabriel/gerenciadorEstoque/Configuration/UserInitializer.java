@@ -1,6 +1,6 @@
 package by.gabriel.gerenciadorEstoque.Configuration;
 
-import by.gabriel.gerenciadorEstoque.Domain.Model.Usuario.Usuario;
+import by.gabriel.gerenciadorEstoque.Model.Usuario.Usuario;
 import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserCargo;
 import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserStatus;
 import by.gabriel.gerenciadorEstoque.Repository.Usuario.UserRepository;

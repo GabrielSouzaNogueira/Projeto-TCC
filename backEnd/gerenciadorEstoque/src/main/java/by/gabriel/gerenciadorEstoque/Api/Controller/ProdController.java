@@ -4,12 +4,10 @@ import by.gabriel.gerenciadorEstoque.Api.DTO.Produto.Consultas.SelectAllProdDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.Produto.ProdutoDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.Produto.UpdateProdDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.Response.ResponseDTO;
-import by.gabriel.gerenciadorEstoque.Domain.Model.Produto.Produto;
-import by.gabriel.gerenciadorEstoque.Domain.Model.Usuario.Usuario;
+import by.gabriel.gerenciadorEstoque.Model.Produto.Produto;
 import by.gabriel.gerenciadorEstoque.Services.ProdService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

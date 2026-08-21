@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import by.gabriel.gerenciadorEstoque.Api.DTO.Usuario.UpdateUserDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.Usuario.UserDTO;
-import by.gabriel.gerenciadorEstoque.Domain.Model.Usuario.Usuario;
+import by.gabriel.gerenciadorEstoque.Model.Usuario.Usuario;
 import by.gabriel.gerenciadorEstoque.Services.UserService;
 
 @RestController

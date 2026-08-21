@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.UUID;
 
 import by.gabriel.gerenciadorEstoque.Api.DTO.Usuario.Consultas.UserSelectDTO;
-import by.gabriel.gerenciadorEstoque.Domain.Exception.User.*;
+import by.gabriel.gerenciadorEstoque.Exception.Usuario.*;
 import org.springframework.stereotype.Service;
 
 import by.gabriel.gerenciadorEstoque.Api.DTO.Usuario.UpdateUserDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.Usuario.UserDTO;
-import by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacao.Movimentacao;
-import by.gabriel.gerenciadorEstoque.Domain.Model.Usuario.Usuario;
+import by.gabriel.gerenciadorEstoque.Model.Movimentacao.Movimentacao;
+import by.gabriel.gerenciadorEstoque.Model.Usuario.Usuario;
 import by.gabriel.gerenciadorEstoque.Enum.Movimentacao.AcaoMovimentacao;
 import by.gabriel.gerenciadorEstoque.Enum.Movimentacao.TipoEntidade;
 import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserCargo;

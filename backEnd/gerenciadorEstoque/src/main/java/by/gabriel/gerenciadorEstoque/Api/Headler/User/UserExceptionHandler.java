@@ -1,4 +1,4 @@
-package by.gabriel.gerenciadorEstoque.Headler.User;
+package by.gabriel.gerenciadorEstoque.Api.Headler.User;
 
 import java.time.Instant;
 
@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import by.gabriel.gerenciadorEstoque.Api.DTO.Response.ResponseDTO;
-import by.gabriel.gerenciadorEstoque.Exception.adada.ExceptionFormPag.User.EmailAlreadyExistException;
-import by.gabriel.gerenciadorEstoque.Exception.adada.ExceptionFormPag.User.InvalidPasswordException;
-import by.gabriel.gerenciadorEstoque.Exception.adada.ExceptionFormPag.User.NoUsersFoundInList;
-import by.gabriel.gerenciadorEstoque.Exception.adada.ExceptionFormPag.User.UserAlreadyExistsException;
-import by.gabriel.gerenciadorEstoque.Exception.adada.ExceptionFormPag.User.UserInactiveException;
-import by.gabriel.gerenciadorEstoque.Exception.adada.ExceptionFormPag.User.UserLogadoNotNull;
-import by.gabriel.gerenciadorEstoque.Exception.adada.ExceptionFormPag.User.UserNameNotNullException;
-import by.gabriel.gerenciadorEstoque.Exception.adada.ExceptionFormPag.User.UserNotFoundException;
-import by.gabriel.gerenciadorEstoque.Exception.adada.ExceptionFormPag.User.UserNotPermission;
-import by.gabriel.gerenciadorEstoque.Exception.adada.ExceptionFormPag.User.UserPasswordNotNullException;
+import by.gabriel.gerenciadorEstoque.Exception.Usuario.EmailAlreadyExistException;
+import by.gabriel.gerenciadorEstoque.Exception.Usuario.InvalidPasswordException;
+import by.gabriel.gerenciadorEstoque.Exception.Usuario.NoUsersFoundInList;
+import by.gabriel.gerenciadorEstoque.Exception.Usuario.UserAlreadyExistsException;
+import by.gabriel.gerenciadorEstoque.Exception.Usuario.UserInactiveException;
+import by.gabriel.gerenciadorEstoque.Exception.Usuario.UserLogadoNotNull;
+import by.gabriel.gerenciadorEstoque.Exception.Usuario.UserNameNotNullException;
+import by.gabriel.gerenciadorEstoque.Exception.Usuario.UserNotFoundException;
+import by.gabriel.gerenciadorEstoque.Exception.Usuario.UserNotPermission;
+import by.gabriel.gerenciadorEstoque.Exception.Usuario.UserPasswordNotNullException;
 
 @RestControllerAdvice
 @Order(1)

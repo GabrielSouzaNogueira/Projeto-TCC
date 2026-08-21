@@ -1,7 +1,7 @@
 package by.gabriel.gerenciadorEstoque.Repository.Produto;
 
 import by.gabriel.gerenciadorEstoque.Api.DTO.Produto.Consultas.SelectAllProdDTO;
-import by.gabriel.gerenciadorEstoque.Domain.Model.Produto.Produto;
+import by.gabriel.gerenciadorEstoque.Model.Produto.Produto;
 import by.gabriel.gerenciadorEstoque.Enum.Produto.ProdStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

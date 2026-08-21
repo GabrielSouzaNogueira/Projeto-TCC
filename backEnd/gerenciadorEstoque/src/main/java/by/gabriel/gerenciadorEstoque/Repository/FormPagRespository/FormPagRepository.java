@@ -1,7 +1,7 @@
 package by.gabriel.gerenciadorEstoque.Repository.FormPagRespository;
 
 import by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.Consultas.SelectFormPagStatusDTO;
-import by.gabriel.gerenciadorEstoque.Domain.Model.FormaPag.FormaPagto;
+import by.gabriel.gerenciadorEstoque.Model.FormaPag.FormaPagto;
 import by.gabriel.gerenciadorEstoque.Enum.FormaPag.FormaPagStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

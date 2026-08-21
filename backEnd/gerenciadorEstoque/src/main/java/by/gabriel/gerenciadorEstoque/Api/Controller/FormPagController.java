@@ -4,7 +4,7 @@ import by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.Consultas.SelectFormPagS
 import by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.FormPagDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.UpdateFormPagDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.Response.ResponseDTO;
-import by.gabriel.gerenciadorEstoque.Domain.Model.FormaPag.FormaPagto;
+import by.gabriel.gerenciadorEstoque.Model.FormaPag.FormaPagto;
 import by.gabriel.gerenciadorEstoque.Services.FormPagService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

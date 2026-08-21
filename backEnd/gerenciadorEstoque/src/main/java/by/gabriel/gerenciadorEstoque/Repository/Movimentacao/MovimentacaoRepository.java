@@ -1,7 +1,7 @@
 package by.gabriel.gerenciadorEstoque.Repository.Movimentacao;
 
 import by.gabriel.gerenciadorEstoque.Api.DTO.Movimentacao.MovimentacaoDTO;
-import by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacao.Movimentacao;
+import by.gabriel.gerenciadorEstoque.Model.Movimentacao.Movimentacao;
 import by.gabriel.gerenciadorEstoque.Enum.Movimentacao.AcaoMovimentacao;
 import by.gabriel.gerenciadorEstoque.Enum.Movimentacao.TipoEntidade;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,7 +1,7 @@
-package by.gabriel.gerenciadorEstoque.Headler.Prod;
+package by.gabriel.gerenciadorEstoque.Api.Headler.Prod;
 
 import by.gabriel.gerenciadorEstoque.Api.DTO.Response.ResponseDTO;
-import by.gabriel.gerenciadorEstoque.Domain.ExceptionProd.*;
+import by.gabriel.gerenciadorEstoque.Exception.Produto.*;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

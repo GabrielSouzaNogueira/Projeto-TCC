@@ -3,7 +3,7 @@ package by.gabriel.gerenciadorEstoque.Api.Controller;
 import by.gabriel.gerenciadorEstoque.Api.DTO.Response.VendaResponseDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.Venda.PagVendaDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.Venda.VendaDTO;
-import by.gabriel.gerenciadorEstoque.Domain.Model.Vendas.Venda;
+import by.gabriel.gerenciadorEstoque.Model.Vendas.Venda;
 import by.gabriel.gerenciadorEstoque.Services.VendaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
