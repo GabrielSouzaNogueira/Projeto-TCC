@@ -3,8 +3,10 @@ package by.gabriel.gerenciadorEstoque.Domain.Model.Movimentacao;
 import by.gabriel.gerenciadorEstoque.Domain.Model.Usuario.Usuario;
 import by.gabriel.gerenciadorEstoque.Enum.Movimentacao.AcaoMovimentacao;
 import by.gabriel.gerenciadorEstoque.Enum.Movimentacao.TipoEntidade;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 public class Movimentacao {
@@ -27,8 +29,10 @@ public class Movimentacao {
 
     private Long registroIntId;
 
-    private String registroStringId;
+    @Column(nullable = true)
+    private UUID registroStringId;
 
+    @Column(nullable = true)
     private String nomeRegistroAfetado;
 
     private String campoAfetado;
@@ -36,7 +40,7 @@ public class Movimentacao {
     public Movimentacao() {}
 
     // Construtor atualizado
-    public Movimentacao(AcaoMovimentacao acao, TipoEntidade tipoEntidade, String registroStringId, Long registroIntId, String nomeRegistroAfetado, String campoAfetado, Usuario autor) {
+    public Movimentacao(AcaoMovimentacao acao, TipoEntidade tipoEntidade, UUID registroStringId, Long registroIntId, String nomeRegistroAfetado, String campoAfetado, Usuario autor) {
         this.acao = acao;
         this.tipoEntidade = tipoEntidade;
         this.registroStringId = registroStringId;
@@ -76,11 +80,11 @@ public class Movimentacao {
         this.registroIntId = registroIntId;
     }
 
-    public String getRegistroStringId() {
+    public UUID getRegistroStringId() {
         return registroStringId;
     }
 
-    public void setRegistroStringId(String registroStringId) {
+    public void setRegistroStringId(UUID registroStringId) {
         this.registroStringId = registroStringId;
     }
 
