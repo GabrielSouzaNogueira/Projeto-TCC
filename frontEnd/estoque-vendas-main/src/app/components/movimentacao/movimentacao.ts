@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { movimentacaoDTO } from '../../models/movimentacaoDTO'; // <-- Import atualizado
+import { movimentacaoDTO } from '../../models/movimentacaoDTO'; 
 import { AuthMovimentacao } from '../../services/auth-movimentacao';
 
 @Component({
@@ -15,16 +15,19 @@ export class Movimentacao implements OnInit {
   carregando: boolean = false;
   buscaRealizada: boolean = false;
 
-  // Atualizado para o novo DTO unificado
   listaMovimentacoes: movimentacaoDTO[] = [];
   movimentacoesExibidas: movimentacaoDTO[] = [];
 
   dataInicio: string = '';       
   dataFim: string = ''; 
-  filtroTipo: string = '';        // <-- NOVO: Filtro para escolher PRODUTO ou USUARIO      
+  filtroTipo: string = '';              
   filtroAcao: string = '';       
-  filtroRegistro: string = '';    // <-- RENOMEADO: Antes era filtroUsuario    
+  filtroRegistro: string = '';        
   filtroResponsavel: string = ''; 
+
+  // NOVA VARIÁVEL: Guarda o módulo aplicado apenas após clicar em "Buscar"
+  // É ela que o HTML vai olhar para esconder a coluna ID Registro
+  filtroAplicadoTipo: string = ''; 
 
   constructor(
     private authMovimentacaoService: AuthMovimentacao,
@@ -36,10 +39,14 @@ export class Movimentacao implements OnInit {
   limparFiltro(): void {
     this.dataInicio = '';
     this.dataFim = '';
-    this.filtroTipo = '';         // <-- Adicionado para limpar
+    this.filtroTipo = '';         
     this.filtroAcao = '';
-    this.filtroRegistro = '';     // <-- Renomeado
+    this.filtroRegistro = '';     
     this.filtroResponsavel = '';
+    
+    // Limpa a variável visual ao limpar a busca
+    this.filtroAplicadoTipo = ''; 
+
     this.buscaRealizada = false;
     this.listaMovimentacoes = [];
     this.movimentacoesExibidas = [];
@@ -48,12 +55,15 @@ export class Movimentacao implements OnInit {
   buscarMovimentacoes(): void {
     this.carregando = true;
 
+    // A MÁGICA AQUI: Salva o estado do select apenas no momento da busca!
+    this.filtroAplicadoTipo = this.filtroTipo;
+
     const filtros: any = {};
-    if (this.filtroTipo) filtros.tipo = this.filtroTipo;                    // <-- Mapeia para o backend
+    if (this.filtroTipo) filtros.tipo = this.filtroTipo;                    
     if (this.dataInicio) filtros.dataInicio = this.dataInicio;
     if (this.dataFim) filtros.dataFim = this.dataFim;
     if (this.filtroAcao) filtros.acao = this.filtroAcao;
-    if (this.filtroRegistro) filtros.registroAfetado = this.filtroRegistro; // <-- Mapeia para o backend
+    if (this.filtroRegistro) filtros.registroAfetado = this.filtroRegistro; 
     if (this.filtroResponsavel) filtros.responsavel = this.filtroResponsavel;
 
     this.authMovimentacaoService.filtrarMovimentacoes(filtros).subscribe({

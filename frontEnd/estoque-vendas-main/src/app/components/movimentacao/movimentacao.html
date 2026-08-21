@@ -92,6 +92,10 @@
             <th>#</th>
             <th>Módulo</th> 
             <th>Responsável</th>
+            
+            <!-- COLUNA SEMPRE VISÍVEL: Retiramos o *ngIf daqui -->
+            <th>ID Registro</th> 
+            
             <th>Registro Afetado</th>
             <th>Ação</th>
             <th>Campo Afetado</th>
@@ -101,21 +105,44 @@
         <tbody>
           <tr *ngFor="let mov of movimentacoesExibidas">
             <td>{{ mov.movId }}</td>
-            <!-- Usa a tag do tipoEntidade (PRODUTO/USUARIO) -->
+            
+            <!-- Módulo -->
             <td><span class="badge cargo-badge">{{ mov.tipoEntidade }}</span></td>
+            
+            <!-- Responsável -->
             <td><strong>{{ mov.responsavel }}</strong></td>
-            <!-- Usa a tag do nome do produto ou usuario afetado -->
-            <td class="destaque">{{ mov.nomeRegistroAfetado }}</td>
+            
+            <!-- CÉLULA SEMPRE VISÍVEL: O conteúdo dentro dela se adapta à entidade -->
+            <td>
+              <!-- Se NÃO for USUARIO (Ex: Produto), mostra o ID numérico normal -->
+              <span *ngIf="mov.tipoEntidade !== 'USUARIO'" class="fw-bold" style="color: #555;">
+                {{ mov.registroAfetadoId || 'N/A' }}
+              </span>
+
+              <!-- Se FOR USUARIO, mostra os 8 primeiros caracteres e esconde o resto no Tooltip -->
+              <span *ngIf="mov.tipoEntidade === 'USUARIO'" class="text-muted" [title]="'UUID Completo: ' + mov.registroAfetadoId" style="cursor: help;">
+                {{ mov.registroAfetadoId | slice:0:8 }}...
+              </span>
+            </td>
+
+            <!-- COLUNA REGISTRO AFETADO -->
+            <td class="destaque">
+              {{ mov.nomeRegistroAfetado }}
+            </td>
+
+            <!-- Ação -->
             <td>
               <span class="badge" [ngClass]="'badge-' + (mov.acaoMov ? mov.acaoMov.toLowerCase() : 'padrao')">
                 {{ mov.acaoMov }}
               </span>
             </td>
+            
+            <!-- Campo Afetado e Data -->
             <td>{{ mov.campoAfetado || '-' }}</td>
             <td>{{ mov.dataMov | date:'dd/MM/yyyy HH:mm' }}</td>
           </tr>
         </tbody>
       </table>
     </div>
-  </div>
+</div>
 </div>
