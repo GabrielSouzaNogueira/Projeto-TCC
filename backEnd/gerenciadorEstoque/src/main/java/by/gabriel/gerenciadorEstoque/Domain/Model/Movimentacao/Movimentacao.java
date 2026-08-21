@@ -25,10 +25,10 @@ public class Movimentacao {
     @Enumerated(EnumType.STRING)
     private TipoEntidade tipoEntidade;
 
-    // ID do produto/usuário afetado (como String para aceitar UUID e Long)
-    private String registroAfetadoId;
+    private Long registroIntId;
 
-    // NOVO CAMPO: O nome do produto ou usuário
+    private String registroStringId;
+
     private String nomeRegistroAfetado;
 
     private String campoAfetado;
@@ -36,10 +36,11 @@ public class Movimentacao {
     public Movimentacao() {}
 
     // Construtor atualizado
-    public Movimentacao(AcaoMovimentacao acao, TipoEntidade tipoEntidade, String registroAfetadoId, String nomeRegistroAfetado, String campoAfetado, Usuario autor) {
+    public Movimentacao(AcaoMovimentacao acao, TipoEntidade tipoEntidade, String registroStringId, Long registroIntId, String nomeRegistroAfetado, String campoAfetado, Usuario autor) {
         this.acao = acao;
         this.tipoEntidade = tipoEntidade;
-        this.registroAfetadoId = registroAfetadoId;
+        this.registroStringId = registroStringId;
+        this.registroIntId = registroIntId;
         this.nomeRegistroAfetado = nomeRegistroAfetado; // <--- Não esqueça do this!
         this.campoAfetado = campoAfetado;
         this.autor = autor;
@@ -67,10 +68,22 @@ public class Movimentacao {
     public TipoEntidade getTipoEntidade() { return tipoEntidade; }
     public void setTipoEntidade(TipoEntidade tipoEntidade) { this.tipoEntidade = tipoEntidade; }
 
-    public String getRegistroAfetadoId() { return registroAfetadoId; }
-    public void setRegistroAfetadoId(String registroAfetadoId) { this.registroAfetadoId = registroAfetadoId; }
+    public Long getRegistroIntId() {
+        return registroIntId;
+    }
 
-    // --- OS GETTERS E SETTERS DO NOVO CAMPO ---
+    public void setRegistroIntId(Long registroIntId) {
+        this.registroIntId = registroIntId;
+    }
+
+    public String getRegistroStringId() {
+        return registroStringId;
+    }
+
+    public void setRegistroStringId(String registroStringId) {
+        this.registroStringId = registroStringId;
+    }
+
     public String getNomeRegistroAfetado() { return nomeRegistroAfetado; }
     public void setNomeRegistroAfetado(String nomeRegistroAfetado) { this.nomeRegistroAfetado = nomeRegistroAfetado; }
 
