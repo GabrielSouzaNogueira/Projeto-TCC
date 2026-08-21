@@ -19,7 +19,8 @@ public interface MovimentacaoRepository extends JpaRepository<Movimentacao, Long
         SELECT new by.gabriel.gerenciadorEstoque.Api.DTO.Movimentacao.MovimentacaoDTO(
             m.id,
             m.tipoEntidade,
-            COALESCE(CAST(m.registroIntId AS string), m.registroStringId),
+            COALESCE(CAST(m.registroIntId AS string), 
+            CAST(m.registroStringId AS string)),
             m.nomeRegistroAfetado,
             m.acao,
             m.campoAfetado,
@@ -35,7 +36,8 @@ public interface MovimentacaoRepository extends JpaRepository<Movimentacao, Long
         SELECT new by.gabriel.gerenciadorEstoque.Api.DTO.Movimentacao.MovimentacaoDTO(
             m.id,
             m.tipoEntidade,
-            COALESCE(CAST(m.registroIntId AS string), m.registroStringId),
+            COALESCE(CAST(m.registroIntId AS string), 
+            CAST(m.registroStringId AS string)),
             m.nomeRegistroAfetado,
             m.acao,
             m.campoAfetado,
