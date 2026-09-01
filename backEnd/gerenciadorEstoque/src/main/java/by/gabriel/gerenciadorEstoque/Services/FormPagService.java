@@ -1,24 +1,25 @@
 package by.gabriel.gerenciadorEstoque.Services;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.Consultas.SelectFormPagStatusDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.FormPagDTO;
 import by.gabriel.gerenciadorEstoque.Api.DTO.FormPagDTO.UpdateFormPagDTO;
-import by.gabriel.gerenciadorEstoque.Exception.Usuario.UserLogadoNotNull;
-import by.gabriel.gerenciadorEstoque.Exception.Usuario.UserNotFoundException;
-import by.gabriel.gerenciadorEstoque.Exception.Usuario.UserNotPermission;
+import by.gabriel.gerenciadorEstoque.Enum.FormaPag.FormaPagStatus;
+import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserCargo;
 import by.gabriel.gerenciadorEstoque.Exception.FormaPag.FormPagAlreadyExistException;
 import by.gabriel.gerenciadorEstoque.Exception.FormaPag.FormPagNotExistException;
 import by.gabriel.gerenciadorEstoque.Exception.FormaPag.FormPagNotNullException;
+import by.gabriel.gerenciadorEstoque.Exception.Usuario.UserLogadoNotNull;
+import by.gabriel.gerenciadorEstoque.Exception.Usuario.UserNotFoundException;
+import by.gabriel.gerenciadorEstoque.Exception.Usuario.UserNotPermission;
 import by.gabriel.gerenciadorEstoque.Model.FormaPag.FormaPagto;
 import by.gabriel.gerenciadorEstoque.Model.Usuario.Usuario;
-import by.gabriel.gerenciadorEstoque.Enum.FormaPag.FormaPagStatus;
-import by.gabriel.gerenciadorEstoque.Enum.Usuario.UserCargo;
 import by.gabriel.gerenciadorEstoque.Repository.FormPagRespository.FormPagRepository;
 import by.gabriel.gerenciadorEstoque.Repository.Usuario.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class FormPagService {
@@ -34,11 +35,6 @@ public class FormPagService {
     public List<SelectFormPagStatusDTO> listar() {
 
         List<SelectFormPagStatusDTO> formaPagtos = formPagRepository.findByStatusCustom(FormaPagStatus.ATIVO);
-
-        if (formaPagtos.isEmpty()) {
-            throw new FormPagNotExistException("Nenhuma forma de pagamento existente no sistema!");
-
-        }
 
         return formaPagtos;
 
@@ -59,7 +55,7 @@ public class FormPagService {
             throw new FormPagNotNullException("A descrição não pode estar vazia!");
         }
 
-        if (formPagRepository.findByDescricaoIgnoreCase(dto.descricao()).isPresent()) {
+        if (formPagRepository.existsByDescricaoIgnoreCaseAndStatus(dto.descricao(), FormaPagStatus.ATIVO)) {
             throw new FormPagAlreadyExistException("Forma de pagamento já existente no sistema!");
         }
 
