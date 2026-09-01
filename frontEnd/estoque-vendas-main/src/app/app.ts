@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Sidebar } from './components/sidebar/sidebar';
+import { NotificacaoToast } from './components/notificacao-toast/notificacao-toast';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, Sidebar],
+  imports: [RouterOutlet, CommonModule, Sidebar, NotificacaoToast],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

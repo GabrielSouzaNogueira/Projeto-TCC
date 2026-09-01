@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { SelectAllProdDTO } from '../../models/select-all-prod-dto';
 import { AuthGerenciadorProduto } from '../../services/auth-gerenciador-produto';
 import { Router } from '@angular/router';
-
+import { AuthNotificacaoService } from '../../services/auth-notificacao';
 
 @Component({
   selector: 'app-gerenciador-produto',
@@ -12,7 +13,7 @@ import { Router } from '@angular/router';
   templateUrl: './gerenciador-produto.html',
   styleUrl: './gerenciador-produto.css',
 })
-export class GerenciadorProduto implements OnInit{
+export class GerenciadorProduto implements OnInit {
   prodIdSelecionado: string = '';
   nomeDigitado: string = '';
   marcaDigitada: string = '';
@@ -25,10 +26,13 @@ export class GerenciadorProduto implements OnInit{
 
   listaProdutos: SelectAllProdDTO[] = [];
 
-  constructor(private AuthGerenciadorProdutoService: AuthGerenciadorProduto, private router: Router, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private AuthGerenciadorProdutoService: AuthGerenciadorProduto,
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private AuthNotificacaoService: AuthNotificacaoService
+  ) {}
 
-    // Verifica se pode salvar: precisa ter um usuário selecionado
-  // e os campos obrigatórios preenchidos
   get podeSalvar(): boolean {
     return (
       !!this.prodIdSelecionado &&
@@ -40,13 +44,11 @@ export class GerenciadorProduto implements OnInit{
     );
   }
 
-    // metodo para carrregar sempre que a tela atulizar
   ngOnInit(): void {
     this.carregarListaProdutos();
   }
 
   carregarListaProdutos(): void {
-
     this.AuthGerenciadorProdutoService.listarProdutos().subscribe({
       next: (dados) => {
         this.listaProdutos = dados;
@@ -56,7 +58,6 @@ export class GerenciadorProduto implements OnInit{
     });
   }
 
-  // Efeito de subir os dados para o formulario ao clicar na lista
   selecionarProduto(produto: SelectAllProdDTO): void {
     this.prodIdSelecionado = produto.prodId;
     this.nomeDigitado = produto.nome;
@@ -65,13 +66,9 @@ export class GerenciadorProduto implements OnInit{
     this.quantidadeDigitada = produto.quantidade;
     this.precoCustoDigitado = produto.precoCusto;
     this.precoVendaDigitado = produto.precoVenda;
-
-    console.log('Produto selecionado para ediçao:', produto);
   }
 
   inativarProduto(produto: SelectAllProdDTO, event: Event): void {
-
-    // impede duplo clique
     event.stopPropagation();
 
     const confirmacao = confirm(`Tem certeza que deseja inativar o produto ${produto.nome}?`);
@@ -80,20 +77,19 @@ export class GerenciadorProduto implements OnInit{
       return;
     }
 
-    console.log('Inativando produto ID:', produto.prodId);
-
     const usuarioAtual = localStorage.getItem('usuarioLogado') || 'Sistema';
-    this.AuthGerenciadorProdutoService.inativarProduto(produto.prodId, usuarioAtual).subscribe ({
-      next: () => {
-        alert(`Produto ${produto.nome} inativado com sucesso!`)
-        this.carregarListaProdutos();
+    this.AuthGerenciadorProdutoService.inativarProduto(produto.prodId, usuarioAtual).subscribe({
+      next: (resposta) => {
+        this.AuthNotificacaoService.sucesso(resposta?.mensagem || `Produto ${produto.nome} inativado com sucesso!`);
+        setTimeout(() => {
+          this.carregarListaProdutos();
+        }, 300);
       },
-      error: (erro) => {
-        console.error('Erro ao inativar Produto:', erro);
-        alert('Não foi possível inativar o produto.');
+      error: (erro: HttpErrorResponse) => {
+        const mensagem = this.AuthNotificacaoService.extrairMensagemErro(erro, 'Não foi possível inativar o produto.');
+        this.AuthNotificacaoService.erro(mensagem);
       }
     });
-
   }
 
   executarGerenciadorProduto(): void {
@@ -101,38 +97,31 @@ export class GerenciadorProduto implements OnInit{
       return;
     }
     if (!this.podeSalvar) {
-      alert('Selecione um produto na lista e preencha os campos obrigatórios antes de salvar.')
+      this.AuthNotificacaoService.erro('Selecione um produto na lista e preencha os campos obrigatórios antes de salvar.');
       return;
     }
     this.carregando = true;
-    console.log('Tentando atualizar produto...')
 
     const usuarioAtual = localStorage.getItem('usuarioLogado') || 'Sistema';
 
-    this.AuthGerenciadorProdutoService.atualizarProduto(this.prodIdSelecionado, this.nomeDigitado, this.marcaDigitada, this.codBarraDigitada, this.quantidadeDigitada, 
-    this.precoCustoDigitado, this.precoVendaDigitado, usuarioAtual).subscribe({
+    this.AuthGerenciadorProdutoService.atualizarProduto(
+      this.prodIdSelecionado, this.nomeDigitado, this.marcaDigitada, this.codBarraDigitada, this.quantidadeDigitada,
+      this.precoCustoDigitado, this.precoVendaDigitado, usuarioAtual
+    ).subscribe({
       next: (resposta) => {
-        console.log('Atualização realizada com sucesso', resposta)
+        this.carregando = false;
+        this.cdr.detectChanges();
+        this.AuthNotificacaoService.sucesso(resposta?.mensagem || 'Atualização realizada com sucesso');
         setTimeout(() => {
-          this.carregando = false;
-          this.cdr.detectChanges();
-        },50)
-        setTimeout(() => {
-          alert('Atualização realizada com sucesso')
-        }, 50);
-        this.carregarListaProdutos();
+          this.carregarListaProdutos();
+        }, 300);
       },
-      error: (erro) => {
-        setTimeout(() => {
-          console.log('Erro ao tentar realizar a atualização', erro)
-          this.carregando = false;
-          this.cdr.detectChanges();
-        }, 50)
-        setTimeout(() => {
-          alert('Atualização de produto nao foi possivel')
-        }, 50)
+      error: (erro: HttpErrorResponse) => {
+        this.carregando = false;
+        this.cdr.detectChanges();
+        const mensagem = this.AuthNotificacaoService.extrairMensagemErro(erro, 'Atualização de produto não foi possível');
+        this.AuthNotificacaoService.erro(mensagem);
       }
-    })
+    });
   }
-}  
-
+}

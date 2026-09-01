@@ -1,8 +1,9 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Auth } from '../../services/auth';
-import { FormsModule } from "@angular/forms"; //importando o serviço aut
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
+import { AuthNotificacaoService } from '../../services/auth-notificacao';
 
 @Component({
   selector: 'app-login',
@@ -12,81 +13,47 @@ import { Router } from '@angular/router';
   styleUrl: './login.css',
 })
 export class Login {
-  //para armazenar o que o usuario digitar
   usuarioDigitado: string = '';
   senhaDigitada: string = '';
 
   carregando: boolean = false;
-    
-  //puxamos para usar a funçao de login
-  constructor(private Auth: Auth, private router: Router, private cdr: ChangeDetectorRef) {}
 
-  //vai ser usado quando acionar o botao de Entrar
+  constructor(
+    private Auth: Auth,
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private authNotificacaoService: AuthNotificacaoService
+  ) {}
+
   executarLogin(): void {
-    // se caso ja esteja carregado evita duplo clique
     if (this.carregando) {
       return;
     }
-    //verificaçao para se o usuario nao tiver digitado nada
+
     if (!this.usuarioDigitado || !this.senhaDigitada) {
-      alert('Preencha todos os campos!');
+      this.authNotificacaoService.erro('Preencha todos os campos!');
       return;
     }
+
     this.carregando = true;
-    console.log('Tentando conectar com o Back-end...')
 
-    // colocar um usuario teste por enquanto ----------------------------------------------------------------
-
-    // const usuarioTeste = 'admin';
-    // const senhaTeste = '123';
-
-    // if (this.usuarioDigitado === usuarioTeste && this.senhaDigitada === senhaTeste) {
-    //   console.log('Login realizado com sucesso');
-    //   setTimeout(() => {
-    //     this.carregando = false;
-    //     this.cdr.detectChanges(); // força a tela a recarregar
-    //     this.router.navigate(['/dashboard']);
-    //   }, 1000);
-    //   return;
-    // }
-
-    // setTimeout(() => {
-    //   this.carregando = false;
-    //   this.cdr.detectChanges(); 
-
-    //   setTimeout(() => {
-    //     alert('Falha no login! Usuário ou senha incorretos.');
-    //   }, 50);
-    // }, 1000);
-    // return; 
-
-    // caso o codigo acima esteja ativa, o abaixo vai desativar, deixar ativado apenas quando os testes 
-    //estiver acontecendo sem o back end, aqui e fim do teste ------------------------------------------------------
-
-    //chamando o metodo e passando as variaveis, o subscribe e para sabermos se deu certo ou errado 
-    this.Auth.login(this.usuarioDigitado, this.senhaDigitada).subscribe({ 
-      // se a resposta for sucesso
+    this.Auth.login(this.usuarioDigitado, this.senhaDigitada).subscribe({
       next: (resposta) => {
-        
-        console.log('Login efetuado com sucesso!', resposta)
+        localStorage.setItem('usuarioLogado', this.usuarioDigitado);
 
-        // 👉 ESTA LINHA SALVA O USUÁRIO LOGADO NO NAVEGADOR
-        localStorage.setItem('usuarioLogado', this.usuarioDigitado); //ATUALIZADO
+        // mostra a mensagem que o back-end realmente mandou (ex: "Usuario logado com sucesso")
+        this.authNotificacaoService.sucesso(resposta?.mensagem || 'Login realizado com sucesso!');
 
-
-        //por enquanto um alert para o usuario
-        alert('Bem-vindo ao sistema!');
-
-        //mandando o usuario para o dashboard
-        this.carregando = false; //desativando o carregamento
-        this.cdr.detectChanges(); // força a tela a recarregar
-        this.router.navigate(['/dashboard'])
+        this.carregando = false;
+        this.cdr.detectChanges();
+        this.router.navigate(['/dashboard']);
       },
-      error: (erro) => {
-        console.error('Erro ao tentar fazer login: ', erro);
-        alert('Usuario ou senha incorretos!')
-        this.carregando = false; //desativando o carregamento
-        this.cdr.detectChanges(); // força a tela a recarregar
+      error: (erro: HttpErrorResponse) => {
+        // mostra a mensagem que o back-end mandou (ex: "Nome ou senha inválidos")
+        const mensagem = this.authNotificacaoService.extrairMensagemErro(erro, 'Usuário ou senha incorretos!');
+        this.authNotificacaoService.erro(mensagem);
+        this.carregando = false;
+        this.cdr.detectChanges();
       }
     });
   }

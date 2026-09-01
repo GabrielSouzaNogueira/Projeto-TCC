@@ -10,19 +10,17 @@ import { Router, RouterModule } from '@angular/router';
   styleUrl: './sidebar.css',
 })
 export class Sidebar {
-  // Variável que controla se a barra lateral está encolhida ou aberta
   estaRecolhida: boolean = false;
 
   constructor(private router: Router) {}
 
-  // Alterna o estado da sidebar (recolher/expandir)
   alternarSidebar(): void {
     this.estaRecolhida = !this.estaRecolhida;
   }
 
-  // metodo de logout 
+  // metodo de logout
   fazerLogout(): void {
-    console.log('Usuário deslogado do sistema');
+    localStorage.removeItem('usuarioLogado'); // encerra a sessão de verdade
     this.router.navigate(['']);
   }
 }

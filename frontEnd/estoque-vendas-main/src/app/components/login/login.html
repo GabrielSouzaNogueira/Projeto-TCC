@@ -2,11 +2,10 @@
     <div>
         <h2>Acesso ao sistema de Estoque e Vendas</h2>
 
-        <!-- o (submit) previte o site de recarregar e esta chamando nossa funçao -->
-        <form>
+        <!-- (ngSubmit) faz o Enter dentro de qualquer input do form chamar executarLogin() -->
+        <form (ngSubmit)="executarLogin()">
             <div class="form-group">
                 <label for="username">Usuario: </label>
-                <!-- ngmodel esta vinculando automaticamente a função -->
                 <input 
                     type="text"
                     id="username"
@@ -26,8 +25,8 @@
                     placeholder="Digite sua senha"
                     required>
             </div>
-            <!-- Botao para enviar o formulario -->
-            <button type="button" (click)="executarLogin()" [disabled]="carregando">
+            <!-- type="submit" faz o Enter e o clique chamarem o mesmo (ngSubmit) do form -->
+            <button type="submit" [disabled]="carregando">
                 {{carregando ? 'Entrando...' : 'Entrar'}}
             </button>
         </form> 
