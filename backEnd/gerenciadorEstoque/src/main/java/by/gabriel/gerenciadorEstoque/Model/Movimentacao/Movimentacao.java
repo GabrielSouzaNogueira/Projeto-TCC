@@ -24,6 +24,7 @@ public class Movimentacao {
     private AcaoMovimentacao acao;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_entidade", length = 50, columnDefinition = "VARCHAR(50)")
     private TipoEntidade tipoEntidade;
 
     private Long registroIntId;
