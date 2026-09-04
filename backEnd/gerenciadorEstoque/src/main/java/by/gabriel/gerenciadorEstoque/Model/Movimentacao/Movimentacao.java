@@ -44,7 +44,7 @@ public class Movimentacao {
         this.tipoEntidade = tipoEntidade;
         this.registroStringId = registroStringId;
         this.registroIntId = registroIntId;
-        this.nomeRegistroAfetado = nomeRegistroAfetado; // <--- Não esqueça do this!
+        this.nomeRegistroAfetado = nomeRegistroAfetado;
         this.campoAfetado = campoAfetado;
         this.autor = autor;
     }
