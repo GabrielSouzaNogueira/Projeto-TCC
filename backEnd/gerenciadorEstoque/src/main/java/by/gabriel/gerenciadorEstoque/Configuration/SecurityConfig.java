@@ -30,7 +30,7 @@ public class SecurityConfig {
 
                     .requestMatchers("/formPag/**").permitAll()
 
-                    .requestMatchers("/venda/**").permitAll()
+                    .requestMatchers("/pedido/**").permitAll()
 
                     .requestMatchers("/cliente/**").permitAll()
 

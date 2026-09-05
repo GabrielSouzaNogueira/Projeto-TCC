@@ -1,8 +1,9 @@
-package by.gabriel.gerenciadorEstoque.Model.Vendas;
+package by.gabriel.gerenciadorEstoque.Model.Pedido;
 
 import java.math.BigDecimal;
 
 import by.gabriel.gerenciadorEstoque.Model.Produto.Produto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,7 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class ItensVenda {
+public class ItensPedido {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -19,7 +20,8 @@ public class ItensVenda {
 
     @ManyToOne
     @JoinColumn(name = "venda_id", nullable = false)
-    private Venda venda;
+    @JsonIgnore
+    private Pedido venda;
 
     @ManyToOne
     @JoinColumn(name = "produto_id", nullable = false)
@@ -31,10 +33,10 @@ public class ItensVenda {
 
     private BigDecimal precoVenda;
 
-    public ItensVenda() {
+    public ItensPedido() {
     }
 
-    public ItensVenda(Long id, Venda venda, Produto produto, Integer quantidade, BigDecimal precoUnitario, BigDecimal precoVenda) {
+    public ItensPedido(Long id, Pedido venda, Produto produto, Integer quantidade, BigDecimal precoUnitario, BigDecimal precoVenda) {
         this.id = id;
         this.venda = venda;
         this.produto = produto;
@@ -76,11 +78,11 @@ public class ItensVenda {
         this.precoVenda = precoVenda;
     }
 
-    public Venda getVenda() {
+    public Pedido getVenda() {
         return venda;
     }
 
-    public void setVenda(Venda venda) {
+    public void setVenda(Pedido venda) {
         this.venda = venda;
     }
 
